@@ -31,7 +31,7 @@ export const Header = ({ user, onLogout }: HeaderProps) => {
                     <div>
                         <div>
                             <User/>
-                            <span>{user.username}</span>
+                            <span>{user.name}</span>
                         </div>
                         {onLogout && (
                             <button onClick={onLogout} title="Logout">

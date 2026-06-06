@@ -1,7 +1,7 @@
 import { Toaster } from "react-hot-toast";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
-import { Dashboard, Documentation, LoginForm } from "./components/index";
+import { Dashboard, Documentation, Home } from "./components/index";
 
 import { AuthProvider, useAuth } from "./contexts/index";
 import React from "react";
@@ -27,9 +27,9 @@ function App() {
   return (
     <AuthProvider>
       <Router>
-        <Toaster/>
+        <Toaster position="top-right"/>
         <Routes>
-          <Route path="/" element={<LoginForm/>} />
+          <Route path="/" element={<Home/>} />
           <Route path="/doc" element={<Documentation/>} />
           <Route
             path="/dashboard"
