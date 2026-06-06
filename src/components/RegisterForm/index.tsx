@@ -1,11 +1,11 @@
 import React, { useState } from "react";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../../contexts/index";
 
 interface RegisterFormProps {
     onToggleMode: () => void;
 }
 
-export const Registerform: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
+export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
     const [formData, setFormData] = useState({
         username: '',
         email: '',
@@ -43,7 +43,8 @@ export const Registerform: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
                 paper: formData.paper,
                 password: formData.password
             });
-        } catch {console.error();
+        } catch (error) {
+            return error
         }
     };
 

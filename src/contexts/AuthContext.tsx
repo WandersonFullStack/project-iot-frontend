@@ -1,17 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { User, UserCreate, AuthContextType } from '../types';
-import { authService } from "../services/authService";
+import React, { useState, useEffect, ReactNode } from "react";
 import toast from 'react-hot-toast';
 
-const AuthContext = createContext<AuthContextType | undefined>(undefined);
+import { User, UserCreate, AuthContextType } from '../types';
+import { authService } from "../services/authService";
+import { AuthContext } from "./index";
 
-export const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (context === undefined) {
-        throw new Error('useAuth must be used within an AuthProvider');
-    }
-    return context;
-};
 
 interface AuthProviderProps {
     children: ReactNode;
