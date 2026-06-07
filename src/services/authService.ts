@@ -21,7 +21,7 @@ api.interceptors.request.use((config) => {
 
 export const authService = {
   async register(userData: UserCreate): Promise<User> {
-    const response = await api.post('api/v1/register', userData);
+    const response = await api.post('api/v1/users', userData);
     return response.data;
   },
 

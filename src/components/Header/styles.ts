@@ -2,7 +2,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const StyleHeader = styled.header`
-    background-color: #1e1e2e;
+    background-color: #181825;
     border-bottom: 1px solid #313244;
     padding: 0 1.5rem;
 `

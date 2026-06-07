@@ -1,9 +1,38 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import { Sparkles, Code, Zap, Shield, ArrowRight, BookOpen } from "lucide-react";
 
 import { RegisterForm, LoginForm, Header } from "../index";
 import { useAuth } from "../../contexts/index";
+import {
+    PageWrapper,
+    WelcomeWrapper,
+    WelcomeCard,
+    WelcomeIcon,
+    WelcomeTitle,
+    WelcomeText,
+    DashboardButton,
+    HomeNav,
+    NavLink,
+    HeroSection,
+    HeroInner,
+    HeroContent,
+    HeroTitle,
+    HeroAccent,
+    HeroActions,
+    PrimaryButton,
+    HeroFormWrapper,
+    FeaturesSection,
+    FeaturesInner,
+    SectionHeader,
+    FeaturesGrid,
+    FeatureCard,
+    CTASection,
+    CTAInner,
+    FooterEl,
+    FooterInner,
+    FooterBrand,
+    FooterCopy,
+} from "./styles";
 
 export const Home: React.FC = () => {
     const [isLogin, setIsLogin] = useState(true);
@@ -15,140 +44,117 @@ export const Home: React.FC = () => {
 
     if (user) {
         return (
-            <div>
-                <div>
-                    <div>
-                        <Shield />
-                    </div>
-
-                    <h2>Welcome, {user.name}</h2>
-                    <p>You are successfully logged in.</p>
-
-                    <button onClick={() => window.location.href = '/dashboard'}>
+            <WelcomeWrapper>
+                <WelcomeCard>
+                    <WelcomeIcon>
+                        <Shield size={32} />
+                    </WelcomeIcon>
+                    <WelcomeTitle>Welcome, {user.name}</WelcomeTitle>
+                    <WelcomeText>You are successfully logged in.</WelcomeText>
+                    <DashboardButton onClick={() => window.location.href = '/dashboard'}>
                         Go to Dashboard
-                    </button>
-                </div>
-            </div>
+                    </DashboardButton>
+                </WelcomeCard>
+            </WelcomeWrapper>
         );
     }
 
     return (
-        <div>
+        <PageWrapper>
             <Header>
-                <div>
-                    <div>
-                        <div>
-                            <Sparkles />
-                            <h1>Magaut Broker</h1>
-                        </div>
-
-                        <nav>
-                            <a href="#features">Features</a>
-                            <Link to="/doc" >
-                                <BookOpen />
-                                Documentation
-                            </Link>
-                            <a href="#about">About</a>
-                            <a href="#contact">Contacts</a>
-                        </nav>
-                    </div>
-                </div>
+                <HomeNav>
+                    <a href="#features">Features</a>
+                    <NavLink to="/doc">
+                        <BookOpen size={15} />
+                        Documentation
+                    </NavLink>
+                    <a href="#about">About</a>
+                    <a href="#contact">Contacts</a>
+                </HomeNav>
             </Header>
 
             {/* Hero Section */}
-            <section>
-                <div>
-                    <div>
-                        <div>
-                            <h1>
-                                Monitor your devices with{' '}
-                                <span>Protocol IoT</span>
-                            </h1>
-                            <div>
-                                <button onClick={() => setIsLogin(false)}>
-                                    Start Now
-                                    <ArrowRight />
-                                </button>
-                            </div>
-                        </div>
-                        <div>
-                            {isLogin ? <LoginForm onToggleMode={toggleMode} /> : <RegisterForm onToggleMode={toggleMode} />}
-                        </div>
-                    </div>
-                </div>
-            </section>
+            <HeroSection>
+                <HeroInner>
+                    <HeroContent>
+                        <HeroTitle>
+                            Monitor your devices with{' '}
+                            <HeroAccent>Protocol IoT</HeroAccent>
+                        </HeroTitle>
+                        <HeroActions>
+                            <PrimaryButton onClick={() => setIsLogin(false)}>
+                                Start Now
+                                <ArrowRight size={16} />
+                            </PrimaryButton>
+                        </HeroActions>
+                    </HeroContent>
+                    <HeroFormWrapper>
+                        {isLogin ? <LoginForm onToggleMode={toggleMode} /> : <RegisterForm onToggleMode={toggleMode} />}
+                    </HeroFormWrapper>
+                </HeroInner>
+            </HeroSection>
 
             {/* Features Section */}
-            <section id="features">
-                <div>
-                    <div>
+            <FeaturesSection id="features">
+                <FeaturesInner>
+                    <SectionHeader>
                         <h2>Powerful Features</h2>
                         <p>Everything you need for your automations.</p>
-                    </div>
+                    </SectionHeader>
 
-                    <div>
-                        <div>
-                            <div>
-                                <Code />
-                                <h3>Protocol MQTT</h3>
-                                <p>
-                                    Connect with your IoT devices.
-                                </p>
-                            </div>
+                    <FeaturesGrid>
+                        <FeatureCard>
+                            <Code size={24} />
+                            <h3>Protocol MQTT</h3>
+                            <p>
+                                Connect with your IoT devices.
+                            </p>
+                        </FeatureCard>
 
-                            <div>
-                                <div>
-                                    <Zap />
-                                </div>
-                                <h3>Fast and Efficient</h3>
-                                <p>
-                                    Monitor your devices quickly and easily, all in one place.
-                                </p>
-                            </div>
-                        </div>
+                        <FeatureCard>
+                            <Zap size={24} />
+                            <h3>Fast and Efficient</h3>
+                            <p>
+                                Monitor your devices quickly and easily, all in one place.
+                            </p>
+                        </FeatureCard>
 
-                        <div>
-                            <div>
-                                <Shield />
-                                <h3>Protocol Modbus/TCP</h3>
-                                <p>
-                                    Connect your PLC and monitor your industrial processes.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                        <FeatureCard>
+                            <Shield size={24} />
+                            <h3>Protocol Modbus/TCP</h3>
+                            <p>
+                                Connect your PLC and monitor your industrial processes.
+                            </p>
+                        </FeatureCard>
+                    </FeaturesGrid>
+                </FeaturesInner>
+            </FeaturesSection>
 
             {/* CTA Section */}
-            <section>
-                <div>
-                    <h2>
-                        Ready to begin?
-                    </h2>
+            <CTASection>
+                <CTAInner>
+                    <h2>Ready to begin?</h2>
                     <p>
                         Create your free account and start monitoring your devices today!
                     </p>
-                    <button onClick={() => setIsLogin(false)}>
+                    <PrimaryButton onClick={() => setIsLogin(false)}>
                         Create account
-                    </button>
-                </div>
-            </section>
+                    </PrimaryButton>
+                </CTAInner>
+            </CTASection>
 
             {/* Footer */}
-            <footer>
-                <div>
-                    <div>
-                        <div>
-                            <Sparkles />
-                            <h3>Magaut Broker</h3>
-                        </div>
-                        <p>
-                            © 2026 Magaut Broker IoT. | Todos os direitos reservados.
-                        </p>
-                    </div>
-                </div>
-            </footer>
-        </div>
+            <FooterEl>
+                <FooterInner>
+                    <FooterBrand>
+                        <Sparkles size={18} />
+                        <span>Magaut Broker</span>
+                    </FooterBrand>
+                    <FooterCopy>
+                        © 2026 Magaut Broker IoT. | Todos os direitos reservados.
+                    </FooterCopy>
+                </FooterInner>
+            </FooterEl>
+        </PageWrapper>
     )
 }

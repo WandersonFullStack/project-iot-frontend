@@ -1,5 +1,17 @@
 import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../contexts/index";
+import {
+    Wrapper,
+    Card,
+    CardHeader,
+    FormGroup,
+    InputWrapper,
+    Input,
+    PasswordToggle,
+    SubmitButton,
+    CardFooter,
+} from "./styles";
 
 interface RegisterFormProps {
     onToggleMode: () => void;
@@ -49,122 +61,130 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
     };
 
     return (
-        <div>
-            <div>
-                <div>
+        <Wrapper>
+            <Card>
+                <CardHeader>
                     <h2>Criar Conta</h2>
                     <p>Cadastrar-se</p>
-                </div>
+                </CardHeader>
 
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <FormGroup>
                         <label htmlFor="username">Username</label>
-                        <div>
-                            <input 
-                                type="text" 
+                        <InputWrapper>
+                            <Input
+                                id="username"
+                                name="username"
+                                type="text"
                                 value={formData.username}
                                 onChange={handleChange}
                                 required
                                 minLength={3}
                                 maxLength={40}
                             />
-                        </div>
-                    </div>
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <div>
+                    <FormGroup>
                         <label htmlFor="email">Email</label>
-                        <div>
-                            <input 
-                                type="email" 
-                                value={formData.email} 
+                        <InputWrapper>
+                            <Input
+                                id="email"
+                                name="email"
+                                type="email"
+                                value={formData.email}
                                 onChange={handleChange}
                                 placeholder="seu@email.com"
                                 required
-                             />
-                        </div>
-                    </div>
+                            />
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <div>
+                    <FormGroup>
                         <label htmlFor="name">Name</label>
-                        <div>
-                            <input 
-                                type="text" 
+                        <InputWrapper>
+                            <Input
+                                id="name"
+                                name="name"
+                                type="text"
                                 value={formData.name}
                                 onChange={handleChange}
                                 required
                                 minLength={2}
                                 maxLength={80}
                             />
-                        </div>
-                    </div>
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <div>
+                    <FormGroup>
                         <label htmlFor="paper">Paper</label>
-                        <div>
-                            <input 
-                                type="text" 
+                        <InputWrapper>
+                            <Input
+                                id="paper"
+                                name="paper"
+                                type="text"
                                 value={formData.paper}
                                 onChange={handleChange}
                                 required
                             />
-                        </div>
-                    </div>
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <div>
+                    <FormGroup>
                         <label htmlFor="password">Password</label>
-                        <div>
-                            <input 
+                        <InputWrapper>
+                            <Input
+                                id="password"
+                                name="password"
                                 type={showPassword ? 'text' : 'password'}
                                 value={formData.password}
                                 onChange={handleChange}
                                 required
-                                minLength={8} 
+                                minLength={8}
                             />
-                            <button 
-                                type="button" 
+                            <PasswordToggle
+                                type="button"
                                 onClick={() => setShowPassword(!showPassword)}
                             >
-                                {showPassword}
-                            </button>
-                        </div>
-                    </div>
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </PasswordToggle>
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <div>
-                        <label htmlFor="password">Confirm Password</label>
-                        <div>
-                            <input 
+                    <FormGroup>
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <InputWrapper>
+                            <Input
+                                id="confirmPassword"
+                                name="confirmPassword"
                                 type={showConfirmPassword ? 'text' : 'password'}
                                 value={formData.confirmPassword}
                                 onChange={handleChange}
                                 required
                             />
-                            <button 
-                                type="button" 
+                            <PasswordToggle
+                                type="button"
                                 onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                             >
-                                {showConfirmPassword}
-                            </button>
-                        </div>
-                    </div>
+                                {showConfirmPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </PasswordToggle>
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                    >
+                    <SubmitButton type="submit" disabled={loading}>
                         {loading ? 'Criando conta...' : 'Criar Conta'}
-                    </button>
+                    </SubmitButton>
                 </form>
 
-                <div>
+                <CardFooter>
                     <p>
                         Já tem uma conta?{' '}
-
                         <button onClick={onToggleMode}>
                             Fazer login
                         </button>
                     </p>
-                </div>
-            </div>
-        </div>
+                </CardFooter>
+            </Card>
+        </Wrapper>
     )
 }

@@ -5,9 +5,10 @@ import { StyleHeader, HeaderInner, Brand, IconWrapper, BrandText, DocLink, UserA
 interface HeaderProps {
     user?: UserType | null;
     onLogout?: () => void;
+    children?: React.ReactNode;
 }
 
-export const Header = ({ user, onLogout }: HeaderProps) => {
+export const Header = ({ user, onLogout, children }: HeaderProps) => {
 
     return (
         <StyleHeader>
@@ -21,6 +22,8 @@ export const Header = ({ user, onLogout }: HeaderProps) => {
                         <p>Powered by MagAutomations</p>
                     </BrandText>
                 </Brand>
+
+                {children}
 
                 <DocLink to="/doc" title="Documentation">
                     <BookOpen />

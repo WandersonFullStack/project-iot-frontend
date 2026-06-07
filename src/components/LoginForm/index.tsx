@@ -1,5 +1,17 @@
 import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { useAuth } from "../../contexts/index";
+import {
+    Wrapper,
+    Card,
+    CardHeader,
+    FormGroup,
+    InputWrapper,
+    Input,
+    PasswordToggle,
+    SubmitButton,
+    CardFooter,
+} from "./styles";
 
 interface LoginFormProps {
     onToggleMode: () => void;
@@ -21,60 +33,59 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onToggleMode }) => {
     };
 
     return (
-        <div>
-            <div>
-                <div>
+        <Wrapper>
+            <Card>
+                <CardHeader>
                     <h2>Enter</h2>
                     <p>Access your account</p>
-                </div>
+                </CardHeader>
 
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    <FormGroup>
                         <label htmlFor="username">Username</label>
-                        <div>
-                            <input 
+                        <InputWrapper>
+                            <Input
+                                id="username"
                                 type="text"
                                 value={username}
                                 onChange={(e) => setUsername(e.target.value)}
                                 required
-                             />
-                        </div>
-                    </div>
+                            />
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <div>
+                    <FormGroup>
                         <label htmlFor="password">Password</label>
-                        <div>
-                            <input 
+                        <InputWrapper>
+                            <Input
+                                id="password"
                                 type={showPassword ? 'text' : 'password'}
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 required
-                             />
-                            <button
+                            />
+                            <PasswordToggle
                                 type="button"
                                 onClick={() => setShowPessword(!showPassword)}
                             >
-                                {showPassword}
-                            </button>
-                        </div>
-                    </div>
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </PasswordToggle>
+                        </InputWrapper>
+                    </FormGroup>
 
-                    <button
-                        type="submit"
-                        disabled={loading}
-                    >
+                    <SubmitButton type="submit" disabled={loading}>
                         {loading ? 'Entering...' : 'Enter'}
-                    </button>
+                    </SubmitButton>
                 </form>
 
-                <div>
+                <CardFooter>
                     <p>Don't have an account?{' '}
-                        <button onClick={onToggleMode} >
+                        <button onClick={onToggleMode}>
                             Create account
                         </button>
                     </p>
-                </div>
-            </div>
-        </div>
+                </CardFooter>
+            </Card>
+        </Wrapper>
     );
 };
