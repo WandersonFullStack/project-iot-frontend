@@ -1,6 +1,6 @@
-import { Link } from "react-router-dom";
-import { Wand2, LogOut, User, BookOpen } from "lucide-react";
+import { CircuitBoard, LogOut, User, BookOpen } from "lucide-react";
 import type { User as UserType } from "../../types";
+import { StyleHeader, HeaderInner, Brand, IconWrapper, BrandText, DocLink, UserArea, UserInfo, Button } from "./styles"
 
 interface HeaderProps {
     user?: UserType | null;
@@ -10,37 +10,37 @@ interface HeaderProps {
 export const Header = ({ user, onLogout }: HeaderProps) => {
 
     return (
-        <header>
-            <div>
-                <div>
-                    <div>
-                        <Wand2 />
-                    </div>
-                    <div>
+        <StyleHeader>
+            <HeaderInner>
+                <Brand>
+                    <IconWrapper>
+                        <CircuitBoard size={32}/>
+                    </IconWrapper>
+                    <BrandText>
                         <h1>MagAut Broker</h1>
                         <p>Powered by MagAutomations</p>
-                    </div>
-                </div>
+                    </BrandText>
+                </Brand>
 
-                <Link to="/doc" title="Documentation">
+                <DocLink to="/doc" title="Documentation">
                     <BookOpen />
                     <span>Documentation</span>
-                </Link>
+                </DocLink>
 
                 {user && (
-                    <div>
-                        <div>
+                    <UserArea>
+                        <UserInfo>
                             <User/>
                             <span>{user.name}</span>
-                        </div>
+                        </UserInfo>
                         {onLogout && (
-                            <button onClick={onLogout} title="Logout">
+                            <Button onClick={onLogout} title="Logout">
                                 <LogOut/>
-                            </button>
+                            </Button>
                         )}
-                    </div>
+                    </UserArea>
                 )}
-            </div>
-        </header>
+            </HeaderInner>
+        </StyleHeader>
     );
 };

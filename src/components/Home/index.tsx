@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Sparkles, Code, Zap, Shield, ArrowRight, BookOpen } from "lucide-react";
 
-import { RegisterForm, LoginForm } from "../index";
+import { RegisterForm, LoginForm, Header } from "../index";
 import { useAuth } from "../../contexts/index";
 
 export const Home: React.FC = () => {
@@ -34,7 +34,7 @@ export const Home: React.FC = () => {
 
     return (
         <div>
-            <header>
+            <Header>
                 <div>
                     <div>
                         <div>
@@ -53,7 +53,7 @@ export const Home: React.FC = () => {
                         </nav>
                     </div>
                 </div>
-            </header>
+            </Header>
 
             {/* Hero Section */}
             <section>
