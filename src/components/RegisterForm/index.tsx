@@ -22,7 +22,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
         username: '',
         email: '',
         name: '',
-        paper: '',
         password: '',
         confirmPassword: ''
     });
@@ -52,7 +51,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
                 username: formData.username,
                 email: formData.email,
                 name: formData.name,
-                paper: formData.paper,
                 password: formData.password
             });
         } catch (error) {
@@ -112,20 +110,6 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({ onToggleMode }) => {
                                 required
                                 minLength={2}
                                 maxLength={80}
-                            />
-                        </InputWrapper>
-                    </FormGroup>
-
-                    <FormGroup>
-                        <label htmlFor="paper">Paper</label>
-                        <InputWrapper>
-                            <Input
-                                id="paper"
-                                name="paper"
-                                type="text"
-                                value={formData.paper}
-                                onChange={handleChange}
-                                required
                             />
                         </InputWrapper>
                     </FormGroup>

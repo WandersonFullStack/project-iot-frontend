@@ -4,10 +4,8 @@ export interface User {
   username: string;
   email: string;
   name: string;
-  paper: string;
   is_active: boolean;
   created_at: string;
-  login_only: TimeRanges;
 }
 
 export interface UserCreate {
@@ -15,7 +13,6 @@ export interface UserCreate {
     email: string;
     name: string;
     password: string;
-    paper: string;
 }
 
 export interface UserLogin {
