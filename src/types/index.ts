@@ -40,14 +40,14 @@ export interface AuthContextType {
 export interface DeviceIn {
   name: string;
   description: string;
-  topics: [string];
+  topics: string[];
 }
 
 export interface DeviceOut {
   device_id: string;
   name: string;
   description: string;
-  topics: [string];
+  topics: string[];
   status: string;
   last_contact: Date | null;
   created_in: Date;
@@ -57,7 +57,7 @@ export interface DeviceOut {
 export interface DeviceUpdate {
   name: string | null;
   description: string | null;
-  topics: [string] | null;
+  topics: string[] | null;
   active: boolean | null;
 }
 
@@ -88,7 +88,7 @@ export interface PublicationIn {
   retain: boolean;
   content_type: string;
   expiry_interval: number;
-  user_properties: [[string]] | null;
+  user_properties: string[] | null;
 }
 
 export interface PublicationOut {

@@ -1,6 +1,8 @@
 import React from "react";
+
 import { useAuth } from "../../contexts/index";
-import { Header } from "../index";
+import { Header, Device } from "../index";
+
 import { PageWrapper, Content } from "./styles";
 
 export const Dashboard: React.FC = () => {
@@ -11,6 +13,7 @@ export const Dashboard: React.FC = () => {
         <PageWrapper>
             <Header user={user} onLogout={logout} />
             <Content>
+                <Device />
             </Content>
         </PageWrapper>
     )
