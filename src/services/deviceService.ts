@@ -8,4 +8,10 @@ export const deviceService = {
         return response.data
     },
 
+    async list(): Promise<DeviceOut> {
+        const response = await api.get('api/v1/devices');
+        return response.data;
+    },
+
+    
 }

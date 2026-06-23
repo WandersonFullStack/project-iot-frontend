@@ -52,6 +52,7 @@ export interface DeviceOut {
   last_contact: Date | null;
   created_in: Date;
   active: boolean;
+  api_key: string;
 }
 
 export interface DeviceUpdate {
@@ -59,10 +60,6 @@ export interface DeviceUpdate {
   description: string | null;
   topics: string[] | null;
   active: boolean | null;
-}
-
-export interface DeviceRegisterOut {
-  api_key:  string;
 }
 
 export interface RenewalKeyOut {
