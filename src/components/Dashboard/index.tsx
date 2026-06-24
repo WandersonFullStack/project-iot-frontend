@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "../../contexts/index";
-import { Header, CreateDevice } from "../index";
+import { Header, CreateDevice, AllDevices } from "../index";
 
 import { 
     PageWrapper, 
@@ -31,13 +31,13 @@ export function Dashboard()  {
             
             <Main>
                 <Menu>
-                    <a onClick={handleAddDevice} >
-                        Add Device
-                    </a>
+                    <div className="nav-section">
+                        <a onClick={handleAddDevice} >Add Device</a>
+                    </div>
                 </Menu>
                 
                 <Content>
-
+                    <AllDevices />
                 </Content>
             </Main>
 

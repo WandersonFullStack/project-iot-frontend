@@ -13,5 +13,8 @@ export const deviceService = {
         return response.data;
     },
 
-    
+    async item(deviceId: string): Promise<DeviceOut> {
+        const response = await api.get(`api/v1/devices/${deviceId}`);
+        return response.data;
+    }
 }

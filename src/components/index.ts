@@ -4,4 +4,6 @@ export { LoginForm } from "./LoginForm";
 export { RegisterForm } from "./RegisterForm";
 export { Dashboard } from "./Dashboard";
 export { Documentation } from "./Documentation";
-export { CreateDevice } from "./Device";
+export { CreateDevice } from "./CreateDevice";
+export { AllDevices } from "./AllDevices";
+export { Device } from "./Device";

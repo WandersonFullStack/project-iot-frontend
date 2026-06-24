@@ -2,7 +2,13 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 export const StyleHeader = styled.header`
-    background-color: #181825;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%
+    z-index: 1000;
+    background: #181825;
     border-bottom: 1px solid #313244;
     padding: 0 1.5rem;
 `
@@ -12,14 +18,14 @@ export const HeaderInner = styled.div`
     align-items: center;
     justify-content: space-between;
     height: 64px;
-    max-width: 1200px;
+    max-width: 1800px;
     margin: 0 auto;
 `
 
 export const Brand = styled.div`
     display: flex;
     align-items: center;
-    gap: o.75rem;
+    gap: 0.75rem;
 `
 
 export const IconWrapper = styled.div`
