@@ -128,6 +128,7 @@ export const HeroContent = styled.div`
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
+    border-right: 1px solid #313244;
 `
 
 export const HeroTitle = styled.h1`

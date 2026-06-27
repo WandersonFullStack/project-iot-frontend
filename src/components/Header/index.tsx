@@ -1,6 +1,6 @@
-import { CircuitBoard, LogOut, User, BookOpen } from "lucide-react";
+import { CircuitBoard, LogOut, User } from "lucide-react";
 import type { User as UserType } from "../../types";
-import { StyleHeader, HeaderInner, Brand, IconWrapper, BrandText, DocLink, UserArea, UserInfo, Button } from "./styles"
+import { StyleHeader, HeaderInner, Brand, IconWrapper, BrandText, UserArea, UserInfo, Button } from "./styles"
 
 interface HeaderProps {
     user?: UserType | null;
@@ -24,11 +24,6 @@ export const Header = ({ user, onLogout, children }: HeaderProps) => {
                 </Brand>
 
                 {children}
-
-                <DocLink to="/doc" title="Documentation">
-                    <BookOpen />
-                    <span>Documentation</span>
-                </DocLink>
 
                 {user && (
                     <UserArea>

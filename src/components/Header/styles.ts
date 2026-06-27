@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 
 export const StyleHeader = styled.header`
     position: fixed;
@@ -9,8 +9,8 @@ export const StyleHeader = styled.header`
     width: 100%
     z-index: 1000;
     background: #181825;
-    border-bottom: 1px solid #313244;
     padding: 0 1.5rem;
+    box-shadow: 0 20px 40px rgba(0,0,0, 0.7);
 `
 
 export const HeaderInner = styled.div`
@@ -54,19 +54,19 @@ export const BrandText = styled.div`
     }
 `
 
-export const DocLink = styled(Link)`
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-    color: #a6adc8;
-    text-decoration: none;
-    font-size: 0.875rem;
-    transition: color 0.2s;
+// export const DocLink = styled(Link)`
+//     display: flex;
+//     align-items: center;
+//     gap: 0.4rem;
+//     color: #a6adc8;
+//     text-decoration: none;
+//     font-size: 0.875rem;
+//     transition: color 0.2s;
 
-    &:hover {
-        color: #cdd6f4;
-    }
-`
+//     &:hover {
+//         color: #cdd6f4;
+//     }
+// `
 
 export const UserArea = styled.div`
     display: flex;

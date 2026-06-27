@@ -30,8 +30,9 @@ export function AllDevices({children}: DeviceProps) {
         loadDevices();
     }, []);
 
-    if (loading) return <p>Crregando dispositivos...</p>;
-    if (error) return <p>{error}</p>;
+    if (loading) return <span>Crregando dispositivos...</span>
+    
+    if (error) return <p>{error}</p>
 
     return (
         <Container>
@@ -39,7 +40,10 @@ export function AllDevices({children}: DeviceProps) {
             <SectionDevices>
                 {children}
                 {devices.map((device) => (
-                    <Device key={device.device_id} deviceId={device.device_id}/>
+                    <Device 
+                        key={device.device_id} 
+                        deviceId={device.device_id}
+                    />
                 ))}
             </SectionDevices>
         </Container>

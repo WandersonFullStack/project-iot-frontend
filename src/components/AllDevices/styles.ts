@@ -26,8 +26,9 @@ export const SectionDevices = styled.section`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 100%;
-    max-width: 1500px;
+    max-width: 1600px;
     height: 100%;
-    gap: 5px 25px;
+    gap: 25px 30px;
     margin-top: 15px;
+    padding: 0;
 `

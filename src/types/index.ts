@@ -50,7 +50,7 @@ export interface DeviceOut {
   topics: string[];
   status: string;
   last_contact: Date | null;
-  created_in: Date;
+  created_in: Date | null;
   active: boolean;
   api_key: string;
 }

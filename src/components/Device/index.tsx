@@ -1,18 +1,23 @@
 import { useState, useEffect } from "react";
+import { Info } from "lucide-react";
 
 import { deviceService } from "../../services/deviceService";
 import { DeviceOut } from "../../types";
 
-import { CardContainer } from "./styles"
+import { CardContainer, CardDevice, TitleDevice, Status} from "./styles"
 
 type PropsDevice = {
     deviceId: string;
-}
+};
+
+// type typeValue = boolean | number | null;
+
 
 export function Device({deviceId}: PropsDevice) {
     const [ device, setDevice ] = useState<DeviceOut | null>(null);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState<string | null>(null);
+    // const [ value, setValue ] = useState<typeValue>(null);
     
     useEffect(() => {
         const loadDevice = async () => {
@@ -29,18 +34,32 @@ export function Device({deviceId}: PropsDevice) {
         loadDevice();
     }, [deviceId]);
 
-    if (loading) return <span>Carregando dispositivo...</span>;
-    if (error) return <span>{error}</span>;
+    if (loading) return <span>Carregando dispositivo...</span>
+    if (error) return <span>{error}</span>
+
+    const isStatus = device?.status === 'offline';
 
     return (
         <CardContainer>
             {device &&
-                <div key={device.device_id}>
-                    <h3>{device.name}</h3>
-                    <p>{device.description}</p>
-                    <p>{device.topics.join(', ')} </p>
-                    <span>{device.status}</span>
-                </div>
+                
+                <CardDevice key={device.device_id}>
+                    <div className="header">
+                        
+                        <TitleDevice>
+                            {device.name} 
+                        </TitleDevice>
+                        
+                        <Status $isStatus={isStatus}>
+                            {device.status}
+                        </Status>
+                            
+                        <div className="info" data-tooltip={device.description}>
+                            <Info size={20}/>
+                        </div>
+
+                    </div>
+                </CardDevice>
             }
         </CardContainer>
     );

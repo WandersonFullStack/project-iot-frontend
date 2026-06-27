@@ -64,13 +64,14 @@ export const Home: React.FC = () => {
             <Header>
                 <HomeNav>
                     <a href="#features">Features</a>
-                    <NavLink to="/doc">
-                        <BookOpen size={15} />
-                        Documentation
-                    </NavLink>
                     <a href="#about">About</a>
                     <a href="#contact">Contacts</a>
                 </HomeNav>
+                
+                <NavLink to="/doc" title="Documentation">
+                    <BookOpen />
+                    <span>Documentation</span>
+                </NavLink>
             </Header>
 
             {/* Hero Section */}
