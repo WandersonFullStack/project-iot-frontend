@@ -4,9 +4,12 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-d
 import { Dashboard, Documentation, Home } from "./components/index";
 
 import { AuthProvider, useAuth } from "./contexts/index";
-import React from "react";
 
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+type PropsApp = {
+  children?: React.ReactNode
+}
+
+function ProtectedRoute({ children }: PropsApp) {
 
   const { user, loading } = useAuth();
 

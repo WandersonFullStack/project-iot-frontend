@@ -1,7 +1,17 @@
 import { useState, useEffect } from "react";
+import { Cog, Search } from "lucide-react";
 
 import { plcService } from "../../services/deviceService";
 import { PLCOut } from "../../types";
+
+import {
+    Container, 
+    PlcHeader,
+    SearchArea,
+    ConfigButton,
+    Title,
+    DashSection
+} from "./styles"
 
 type PlcProps = {
     controllerId: number;
@@ -32,13 +42,29 @@ export function Plc({controllerId}: PlcProps) {
     if (error) return <span>{error}</span>
 
     return (
-        <div>
+        <>
             {plc && (
-                <div key={plc.id}>
-                    <h3>{plc.name}</h3>
-                    <span>{plc.active}</span>
-                </div>
+                <Container key={plc.id}>
+                    <PlcHeader>
+                        <Title>{plc.name}</Title>
+
+                        <SearchArea>
+                            <button className="button-search">
+                                <Search size={22} />
+                            </button>
+                            <input type="search" placeholder="Search Register"/>
+                        </SearchArea>
+
+                        <ConfigButton>
+                            <Cog size={20}/>
+                        </ConfigButton>
+                    </PlcHeader>
+                    
+                    <DashSection>
+
+                    </DashSection>
+                </Container>
             )}
-        </div>
+        </>
     );
 };

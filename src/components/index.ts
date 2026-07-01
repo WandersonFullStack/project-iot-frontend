@@ -8,3 +8,6 @@ export { CreateDevice } from "./CreateDevice";
 export { AllDevices } from "./AllDevices";
 export { Device } from "./Device";
 export { Plc } from "./Plc";
+export { CancelButton } from "./CancelButton";
+export { Popup } from "./Popup";
+export { CreatePlc } from "./CreatePlc";

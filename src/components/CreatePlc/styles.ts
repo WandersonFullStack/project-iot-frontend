@@ -12,7 +12,7 @@ export const CardCreate = styled.div`
     align-items: center;
     border: solid #6c7086 1px;
     width: 280px;
-    min-height: 320px;
+    min-height: 750px;
     border-radius: 10px;
     color: #ddd;
 
@@ -50,10 +50,31 @@ export const FormGroup = styled.div`
         padding: 0 5px;
         outline: none;
         background: rgba(50,50,50, 0.5);
-        color: #eee;
+        color: #cdd6f4;
         box-sizing: border-box;
         transition: border-color 0.2s;
         
+        &:focus {
+            border-color: #08692d;
+        }
+
+        &::placehouder {
+            color: #6c7086;
+        }
+    }
+
+    select {
+        border: 1px solid #313244;
+        border-radius: 10px;
+        text-align: center;
+        width: 100%;
+        height: 35px;
+        font-size: 16px;
+        background: rgba(50,50,50, 0.5);
+        color: #cdd6f4;
+        outline: none;
+        transition: border-color 0.2s;
+
         &:focus {
             border-color: #08692d;
         }

@@ -7,7 +7,7 @@ export const StyleHeader = styled.header`
     left: 0;
     right: 0;
     width: 100%
-    z-index: 1000;
+    z-index: 9999;
     background: #181825;
     padding: 0 1.5rem;
     box-shadow: 0 20px 40px rgba(0,0,0, 0.7);
@@ -17,8 +17,8 @@ export const HeaderInner = styled.div`
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
-    max-width: 1800px;
+    height: 4rem;
+    max-width: 112.5rem;
     margin: 0 auto;
 `
 

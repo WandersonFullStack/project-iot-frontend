@@ -2,17 +2,17 @@ import styled from "styled-components";
 
 type StatusProps = {
     $isStatus?: boolean;
-}
+};
+
 
 export const CardContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
     padding: 5px;
-    width: 100%;
-    max-width: 1600px;
+    width: 95%;
+    height: 250px;
     margin: 10px;
-    height: 230px;
     
     border: 2px solid transparent;
     border-radius: 15px;
@@ -20,7 +20,7 @@ export const CardContainer = styled.div`
     background-origin: border-box;
     background-image: 
         linear-gradient(rgb(59, 59, 61), rgb(41, 40, 40)), 
-        linear-gradient(to right, #08692d, #861eee);
+        linear-gradient(to right, #1d492e, #095a28);
     box-shadow: 5px 15px 30px rgba(0,0,0, 0.6);
 `
 
@@ -40,7 +40,7 @@ export const CardDevice = styled.div`
         justify-content: space-between;
         width: 100%;
         margin-top: 5px;
-        border-bottom: 1px solid #AAACAD;
+        border-bottom: 1px solid #313844;
 
         .info {
             cursor: pointer;
@@ -79,3 +79,31 @@ export const Status = styled.span<StatusProps>`
     padding: 10px;
 
 `
+
+export const FooterDevice = styled.footer`
+    width: 100%;
+    height: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    border-top: 1px solid #313844;
+
+    h3 {
+        font-size: 1rem;
+        color: #AAACAD;
+    }
+
+    a {
+        text-decoration: none;
+        text-align: center;
+        font-size: 1rem;
+        cursor: pointer;
+        color: #616884;
+        transition: color 0.2s;
+
+        &:hover {
+            color: #AAACAD;
+        }
+    }
+`
+
