@@ -15,19 +15,18 @@ export const PageWrapper = styled.div`
 
 export const Main = styled.main`
     width: 100%;
-    height: calc(100vh - 4rem);
+    min-height: calc(100vh - 4rem);
 `
 
 export const InsertMenu = styled.aside`
     position: fixed;
-    top: 4rem;
+    top: 4.1rem;
     left: 0;
     z-index: 900;
     width: 3.125rem;
     height: calc(100vh - 4rem);
     display: flex;
     justify-content: center;
-    align-items: center;
     box-shadow: 8px 0 24px rgba(0,0,0, 0.25);
     background: #1e1e2e;
 
@@ -37,8 +36,9 @@ export const InsertMenu = styled.aside`
         transition: color 0.2s;
         cursor: pointer;
         border: none;
-        width: 100%;
-        height: 100%;
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-top: 1rem;
 
         &:hover {
             color: #a6adc8;
@@ -48,7 +48,7 @@ export const InsertMenu = styled.aside`
 
 export const Menu = styled.aside`
     position: fixed;
-    top: 4rem;
+    top: 4.1rem;
     left: 0;
     z-index: 1000;
     display: flex;
@@ -128,7 +128,7 @@ export const Content = styled.section<ContentProps>`
     align-items: flex-start;
     margin-left: ${({ $menuOpen }) => ($menuOpen ? '17.5rem' : '3.125rem')};
     transition: margin-left 0.3s ease, width 0.3s ease;
-    padding: 1rem;
+    padding: 0.2rem 0 0 0.2rem;
 `
 
 export const PlcList = styled.div`
@@ -161,13 +161,22 @@ export const PlcList = styled.div`
         }
     }
 
+    .actions-list {
+        display: flex;
+        align-atems: center;
+        justify-content: space-evenly;
+        margin-top: 1rem;
+        gap: .2rem;
+    }
+
     .close-button {
         background: none;
         border: none;
-        width: 97%;
+        width: 90%;
         color: #6c7086;
         cursor: pointer;
         transition: color 0.2s;
+        
 
         &:hover {
             color: #a6adc8;

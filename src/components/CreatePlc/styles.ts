@@ -1,20 +1,14 @@
 import styled from "styled-components";
 
 
-export const Card = styled.div`
-    max-width: 100%;
-    height: auto;
-`
-
 export const CardCreate = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: solid #6c7086 1px;
-    width: 280px;
-    min-height: 750px;
-    border-radius: 10px;
-    color: #ddd;
+    width: 80%;
+    height: 90vh;
+    border: none;
+    position: fixed;
 
     h2 {
         color: #08692d;
@@ -23,11 +17,13 @@ export const CardCreate = styled.div`
     }
     
     form {
-        display: flex;
-        flex-direction: column;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
         align-items: center;
-        gap: 10px;
-        width: 90%;
+        gap: 45px 25px;
+        width: 80%;
+        margin-top: 2rem;
+        color: #cdd6f4;
     }
 
 `
@@ -41,7 +37,7 @@ export const FormGroup = styled.div`
 
     input {
         border: 1px solid #313244;
-        border-radius: 10px;
+        border-radius: 5px;
         text-align: center;
         width: 100%;
         height: 35px;
@@ -65,7 +61,7 @@ export const FormGroup = styled.div`
 
     select {
         border: 1px solid #313244;
-        border-radius: 10px;
+        border-radius: 5px;
         text-align: center;
         width: 100%;
         height: 35px;
@@ -87,79 +83,20 @@ export const FormGroup = styled.div`
 `
 
 export const CreateButton = styled.button`
-    color: #eee;
-    width: 120px;
+    color: #6c7086;
+    width: 180px;
     height: 35px;
-    background-color: #08692d;
-    border: none;
-    border-radius: 15px;
-    margin-top: 5px;
+    border: solid #08692d 1px;
+    border-radius: 5px;
+    margin-top: 5rem;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
+    background: none;
+    transition: color .3s, background 0.3s;
 
     &:hover {
-        opacity: 0.7;
-    }
-`
-
-export const PopupOverlay = styled.div`
-    position: fixed;
-    inset: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justfy-content: center;
-    background: rgba(0,0,0, 0.8);
-    padding: 0 0 0 450px;
-`
-
-export const PopupCard = styled.div`
-    width: 100%;
-    max-width: 430px;
-    align-items: center;
-    background: #020814;
-    color: #eee;
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 20px 60px rgba(0,0,0, 0.35);
-
-    h3 {
-        margin-bottom: 12px;
-    }
-
-    textarea {
-        width: 95%;
-        padding: 10px;
-        text-align: center;
-        border-radius: 10px;
-        margin-top: 15px;
-        border: none;
-        resize: none;
-        font-size: 14px;
-    }
-
-    .popup-actions {
-        display: flex;
-        justify-content: end;
-        padding: 10px;
-        gap: 15px;
-
-
-        button {
-            color: #000;
-            background-color: #08692d;
-            width: 80px;
-            height: 35px;
-            border: none;
-            border-radius: 15px;
-            font-size: 18px;
-            font-weight: 500;
-            cursor: pointer;
-
-            &:hover {
-                opacity: 0.7;
-            }
-        }
+        color: #a6adc8;
+        background: #08692d;
     }
 `

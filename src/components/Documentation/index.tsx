@@ -10,11 +10,13 @@ import {
     SectionText,
 } from "./styles";
 
-// interface DocSection {
-//     id: string;
-//     title: string;
-//     content: React.ReactNode;
-// }
+{/*
+interface DocSection {
+    id: string;
+    title: string;
+    content: React.ReactNode;
+}
+*/}
 
 export const Documentation: React.FC = () => {
 

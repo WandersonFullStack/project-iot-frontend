@@ -1,16 +1,19 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
-import { deviceService, plcService } from "../../services/deviceService";
-import { DeviceOut } from "../../types";
+import { plcService } from "../../services/deviceService";
 
 import { 
-    CardCreate, 
+    CardUpdate, 
     FormGroup, 
     CreateButton, 
 } from "./styles";
 
+type Props = {
+    plcId: number;
+    onSuccess: () => void;
+};
+
 type PlcFormState = {
-    device_id: string
     name: string;
     ip: string;
     port_modbus: number;
@@ -19,19 +22,14 @@ type PlcFormState = {
     description: string;
     unit_id: number;
     timeout: number;
+    active: boolean;
 };
 
-type Props = {
-    onSuccess: () => void;
-}
 
-
-export function CreatePlc({onSuccess}: Props) {
+export function UpdatePLC({plcId, onSuccess}: Props) {
     const [ loading, setLoading ] = useState(false);
-    const [ devices, setDevices] = useState<DeviceOut[]>([])
     const [ formPlc, setFormPlc ] = useState<PlcFormState>(
         {
-            device_id: "",
             name: "",
             ip: "",
             port_modbus: 502,
@@ -39,23 +37,21 @@ export function CreatePlc({onSuccess}: Props) {
             protocol: "modbus",
             description: "",
             unit_id: 255,
-            timeout: 5
+            timeout: 5,
+            active: true
         }
     );
-
-    useEffect(() => {
-        deviceService.list().then((data) => {
-            setDevices(data as unknown as DeviceOut[]);
-        });
-    }, []);
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
+        const checked = e.target.ariaChecked;
         const numericFields = ["port_modbus", "port_tcp", "unit_id", "timeout"];
+        const checkBox = ["active"];
 
         setFormPlc((prev) => ({
                 ...prev,
                 [name]: numericFields.includes(name) ? Number(value) : value,
+                [name]: checkBox.includes(name) ? Boolean(checked) : checked,
             }));
         };
 
@@ -65,19 +61,18 @@ export function CreatePlc({onSuccess}: Props) {
 
         try {
 
-            await plcService.create({
-                device_id: formPlc.device_id,
-                name: formPlc.name,
-                ip: formPlc.ip,
+            await plcService.update(plcId, {
+                name: formPlc.name || null,
+                ip: formPlc.ip || null,
                 port_modbus: formPlc.port_modbus,
                 port_tcp: formPlc.port_tcp,
                 protocol: formPlc.protocol,
                 description: formPlc.description || null,
                 unit_id: formPlc.unit_id,
-                timeout: formPlc.timeout
+                timeout: formPlc.timeout,
+                active: formPlc.active,
             });
             setFormPlc({
-                device_id: "",
                 name: "",
                 ip: "",
                 port_modbus: 502,
@@ -85,11 +80,12 @@ export function CreatePlc({onSuccess}: Props) {
                 protocol: "modbus",
                 description: "",
                 unit_id: 255,
-                timeout: 5
+                timeout: 5,
+                active: true
             });
             onSuccess();
         } catch (error) {
-            console.error("Erro ao criar PLC:", error);
+            console.error("Erro ao atualizar PLC:", error);
         } finally {
             setLoading(false);
         }
@@ -97,85 +93,63 @@ export function CreatePlc({onSuccess}: Props) {
 
     return (
         <>
-            <CardCreate>
-                <h2>Create PLC</h2>
+            <CardUpdate>
+                <h2>Update PLC</h2>
 
                 <form onSubmit={handleSubmit}>
                     <FormGroup>
-                        <label htmlFor="device_id">Dvice: *</label>
-                        <select 
-                            name="device_id" 
-                            value={formPlc.device_id}
-                            onChange={handleChange}
-                            required
-                        >
-                            <option>Select a device</option>
-                            {devices.map((device) => (
-                                <option key={device.device_id} value={device.device_id}>
-                                    {device.name}
-                                </option>
-                            ))}
-                        </select>
-                    </FormGroup>
-
-                    <FormGroup>
-                        <label htmlFor="name">Name: *</label>
+                        <label htmlFor="name">Name: </label>
                         <input 
                             name="name"
                             type="text"
                             value={formPlc.name}
                             onChange={handleChange}
-                            required
                             minLength={3}
                             maxLength={40} 
                         />
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="ip">IP Address: *</label>
+                        <label htmlFor="ip">IP Address: </label>
                         <input 
                             name="ip"
                             type="text"
                             value={formPlc.ip}
                             onChange={handleChange}
-                            required
                             placeholder="192.168.1.10" 
                         />
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="port_modbus">Modbus Port: *</label>
+                        <label htmlFor="port_modbus">Modbus Port: </label>
                         <input 
                             name="port_modbus"
                             type="number"
                             value={formPlc.port_modbus}
                             onChange={handleChange}
-                            required
                             min={1}
                             max={65535} 
                         />
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="port_tcp">TCP Port: *</label>
+                        <label htmlFor="port_tcp">TCP Port: </label>
                         <input 
                             name="port_tcp"
                             type="number"
                             value={formPlc.port_tcp}
                             onChange={handleChange}
-                            required
                             min={1}
                             max={65535} 
                         />
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="protocol">Protocol: *</label>
+                        <label htmlFor="protocol">Protocol: </label>
                         <select 
                             name="protocol"
                             value={formPlc.protocol}
                             onChange={handleChange}
-                            required
                         >
                             <option value="modbus">Modbus</option>
                             <option value="tcp">TCP</option>
@@ -194,26 +168,24 @@ export function CreatePlc({onSuccess}: Props) {
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="unit_id">Unit ID: *</label>
+                        <label htmlFor="unit_id">Unit ID: </label>
                         <input 
                             name="unit_id"
                             type="number"
                             value={formPlc.unit_id}
                             onChange={handleChange}
-                            required
                             min={1}
                             max={255} 
                         />
                     </FormGroup>
 
                     <FormGroup>
-                        <label htmlFor="timeout">Timeout (s): *</label>
+                        <label htmlFor="timeout">Timeout (s): </label>
                         <input 
                             name="timeout"
                             type="number"
                             value={formPlc.timeout}
                             onChange={handleChange}
-                            required
                             min={1} 
                         />
                     </FormGroup>
@@ -222,8 +194,7 @@ export function CreatePlc({onSuccess}: Props) {
                         {loading ? "Sending..." : "Send"}
                     </CreateButton>
                 </form>
-                
-            </CardCreate>
+            </CardUpdate>
         </>
     );
 }

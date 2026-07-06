@@ -1,9 +1,8 @@
 import { useState, useEffect } from "react";
-import { Info, MoveRight } from "lucide-react";
+import { Info } from "lucide-react";
 
 import { deviceService } from "../../services/deviceService";
 import { DeviceOut, PLCOut } from "../../types";
-import { Popup, CancelButton, CreatePlc } from "../index";
 
 import { 
     CardContainer, 
@@ -22,7 +21,6 @@ export function Device({deviceId}: PropsDevice) {
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState<string | null>(null);
     const [ existPlc, setExistPlc ] = useState<PLCOut | null>(null);
-    const [ addPlc, setAddPlc ] = useState(false);
     
     useEffect(() => {
         const loadDevice = async () => {
@@ -57,15 +55,6 @@ export function Device({deviceId}: PropsDevice) {
 
     const isStatus = device?.status === 'offline';
 
-    const handlePlcFormOpen = () => {
-        setAddPlc(true);
-    };
-
-    const handlePlcFormClose = () => {
-        setAddPlc(false);
-    }
-
-    
 
     return (
         <>
@@ -92,26 +81,19 @@ export function Device({deviceId}: PropsDevice) {
 
                         </div>
                         <FooterDevice>
-                            {existPlc ? (
+                            {existPlc && (
                                 <>
-                                    <h3>{existPlc.name}</h3>
-                                    <a >access plc <MoveRight size={14}/> </a>
+                                    <h3>
+                                        <p>PLC active: </p>
+                                        {existPlc.name}
+                                    </h3>
                                 </>
-                            ) : (
-                                <a onClick={handlePlcFormOpen}>Create PLC <MoveRight size={14}/></a>
                             )}
                         </FooterDevice>
                     </CardDevice>
                 }
             </CardContainer>
-            {addPlc && (
-                <Popup>
-                    <CreatePlc/>
-                    <CancelButton onClick={handlePlcFormClose}>
-                        Cancel
-                    </CancelButton>
-                </Popup>
-            )}
+            
         </>
     );
 }

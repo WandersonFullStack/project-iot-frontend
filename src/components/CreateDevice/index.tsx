@@ -1,8 +1,9 @@
 import { useState } from "react";
 
 import { deviceService } from "../../services/deviceService";
+import { Popup } from "../index";
 
-import { Card, 
+import {
     CardCreate, 
     FormGroup, 
     CreateButton, 
@@ -84,7 +85,7 @@ export function CreateDevice() {
     };
 
     return (
-        <Card>
+        <Popup>
             <CardCreate>
                 <h2>Create Device</h2>
 
@@ -129,6 +130,7 @@ export function CreateDevice() {
                         {loading ? "Sending..." : "Send"}
                     </CreateButton>
                 </form>
+                
             </CardCreate>
 
             {apiKey && (
@@ -156,6 +158,6 @@ export function CreateDevice() {
                     </PopupCard>
                 </PopupOverlay>
             )}
-        </Card>
+        </Popup>
     );
 }

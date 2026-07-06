@@ -40,8 +40,8 @@ export const plcService = {
         return response.data;
     },
 
-    async update(plcId: number): Promise<PLCOut> {
-        const response = await api.patch(`api/v1/plcs/${plcId}`);
+    async update(plcId: number, plcData): Promise<PLCOut> {
+        const response = await api.patch(`api/v1/plcs/${plcId}`, plcData);
         return response.data;
     },
 

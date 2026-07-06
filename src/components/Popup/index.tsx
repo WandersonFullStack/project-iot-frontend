@@ -1,4 +1,4 @@
-import { ContainerPopup, PopupForm } from "./styles";
+import { ContainerPopup } from "./styles";
 
 type PropsPopup = {
     children?: React.ReactNode;
@@ -9,9 +9,7 @@ export function Popup({children}: PropsPopup) {
     return (
         <>
             <ContainerPopup>
-                <PopupForm>
-                    {children}
-                </PopupForm>
+                {children}
             </ContainerPopup>
         </>
     )

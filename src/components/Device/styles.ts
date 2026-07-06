@@ -55,7 +55,7 @@ export const CardDevice = styled.div`
                 left: 50%;
                 transform: translateX(-50%);
                 background: #555;
-                color: #eee;
+                color: #fff;
                 padding: 4px 8px;
                 border-radius: 6px;
                 white-space: nowrap;
@@ -90,7 +90,7 @@ export const FooterDevice = styled.footer`
 
     h3 {
         font-size: 1rem;
-        color: #AAACAD;
+        color: #a6adc8;
     }
 
     a {
@@ -98,11 +98,11 @@ export const FooterDevice = styled.footer`
         text-align: center;
         font-size: 1rem;
         cursor: pointer;
-        color: #616884;
+        color: #6c7086;
         transition: color 0.2s;
 
         &:hover {
-            color: #AAACAD;
+            color: #a6adc8;
         }
     }
 `

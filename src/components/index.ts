@@ -11,3 +11,4 @@ export { Plc } from "./Plc";
 export { CancelButton } from "./CancelButton";
 export { Popup } from "./Popup";
 export { CreatePlc } from "./CreatePlc";
+export { UpdatePLC } from "./UpdatePLC";
