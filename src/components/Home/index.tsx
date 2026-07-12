@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Sparkles, Code, Zap, Shield, ArrowRight, BookOpen } from "lucide-react";
+import { Shield, ArrowRight, BookOpen, CircuitBoard } from "lucide-react";
 
-import { RegisterForm, LoginForm, Header } from "../index";
+import { RegisterForm, LoginForm } from "../index";
 import { useAuth } from "../../contexts/index";
+
 import {
     PageWrapper,
     WelcomeWrapper,
@@ -11,6 +12,10 @@ import {
     WelcomeTitle,
     WelcomeText,
     DashboardButton,
+    HeaderInner,
+    Brand,
+    IconWrapper,
+    BrandText,
     HomeNav,
     NavLink,
     HeroSection,
@@ -61,7 +66,16 @@ export const Home: React.FC = () => {
 
     return (
         <PageWrapper>
-            <Header>
+            <HeaderInner>
+                <Brand>
+                    <IconWrapper>
+                        <CircuitBoard size={32}/>
+                    </IconWrapper>
+                    <BrandText>
+                        <h1>MAB View</h1>
+                        <p>Powered by MagAutomations</p>
+                    </BrandText>
+                </Brand>
                 <HomeNav>
                     <a href="#features">Features</a>
                     <a href="#about">About</a>
@@ -72,7 +86,7 @@ export const Home: React.FC = () => {
                     <BookOpen />
                     <span>Documentation</span>
                 </NavLink>
-            </Header>
+            </HeaderInner>
 
             {/* Hero Section */}
             <HeroSection>
@@ -105,7 +119,6 @@ export const Home: React.FC = () => {
 
                     <FeaturesGrid>
                         <FeatureCard>
-                            <Code size={24} />
                             <h3>Protocol MQTT</h3>
                             <p>
                                 Connect with your IoT devices.
@@ -113,7 +126,6 @@ export const Home: React.FC = () => {
                         </FeatureCard>
 
                         <FeatureCard>
-                            <Zap size={24} />
                             <h3>Fast and Efficient</h3>
                             <p>
                                 Monitor your devices quickly and easily, all in one place.
@@ -121,7 +133,6 @@ export const Home: React.FC = () => {
                         </FeatureCard>
 
                         <FeatureCard>
-                            <Shield size={24} />
                             <h3>Protocol Modbus/TCP</h3>
                             <p>
                                 Connect your PLC and monitor your industrial processes.
@@ -148,11 +159,11 @@ export const Home: React.FC = () => {
             <FooterEl>
                 <FooterInner>
                     <FooterBrand>
-                        <Sparkles size={18} />
-                        <span>Magaut Broker</span>
+                        <CircuitBoard size={18} />
+                        <span>MAB View</span>
                     </FooterBrand>
                     <FooterCopy>
-                        © 2026 Magaut Broker IoT. | Todos os direitos reservados.
+                        © 2026 MAB View IoT. | Todos os direitos reservados.
                     </FooterCopy>
                 </FooterInner>
             </FooterEl>

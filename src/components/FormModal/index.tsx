@@ -4,7 +4,7 @@ type PropsPopup = {
     children?: React.ReactNode;
 };
 
-export function Popup({children}: PropsPopup) {
+export function FormModal({children}: PropsPopup) {
 
     return (
         <>

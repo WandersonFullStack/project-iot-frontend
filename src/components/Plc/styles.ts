@@ -4,17 +4,15 @@ import styled from "styled-components";
 export const Container = styled.main`
     display: flex;
     flex-direction: column;
-    width: 100vw;
+    width: 100%;
     min-height: 100vh;
 `
 
 export const PlcHeader = styled.section`
-    position: fixed;
-    z-index: 900;
     display: flex;
     justify-content: space-evenly;
     align-items: center;
-    width: 98%;
+    width: 100%;
     height: 2.5rem;
     border: none;
     background: #1e1e2e;

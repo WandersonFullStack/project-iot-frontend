@@ -30,7 +30,6 @@ export const CardDevice = styled.div`
     justify-content: space-between;
     align-items: center;
     width: 100%;
-    max-width: 1600px;
     height: 100%;
     background: rgba(0,0,0, 0.4);
     border-radius: 15px;
@@ -43,10 +42,11 @@ export const CardDevice = styled.div`
         border-bottom: 1px solid #313844;
 
         .info {
+            width: 2rem;
             cursor: pointer;
             background: transparent;
             position: relative;
-            padding: 6px 8px 0 0;
+            padding-top: .3rem;
                 
             &:hover::after {
                 content: attr(data-tooltip);
@@ -67,7 +67,7 @@ export const CardDevice = styled.div`
 `
 
 export const TitleDevice = styled.h3`
-    width: 100%;
+    width: 14.375rem;
     padding: 5px 0 0 25px;
 `
 
@@ -75,9 +75,8 @@ export const Status = styled.span<StatusProps>`
     color: ${({$isStatus}) => ($isStatus ? 'red' : 'green')};
     
     text-align: center;
-    width: 250px;
-    padding: 10px;
-
+    width: 7.5rem;
+    margin-top: .3rem;
 `
 
 export const FooterDevice = styled.footer`
@@ -85,7 +84,8 @@ export const FooterDevice = styled.footer`
     height: 1.5rem;
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: row;
+    gap: 1rem;
     border-top: 1px solid #313844;
 
     h3 {
@@ -93,17 +93,25 @@ export const FooterDevice = styled.footer`
         color: #a6adc8;
     }
 
-    a {
-        text-decoration: none;
+    p {
+        color: #6c7086;
         text-align: center;
         font-size: 1rem;
-        cursor: pointer;
-        color: #6c7086;
-        transition: color 0.2s;
-
-        &:hover {
-            color: #a6adc8;
-        }
+        margin-left: 1rem;
     }
+
 `
 
+export const TrashButton = styled.button`
+    width: 2rem;
+    border: none;
+    background: none;
+    margin-top: .2rem;
+    cursor: pointer;
+    color: #6c7086;
+    transition: color 0.2s;
+
+    &:hover {
+        color: #c92a3f;
+    }
+`

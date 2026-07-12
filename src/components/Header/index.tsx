@@ -1,6 +1,6 @@
 import { CircuitBoard, LogOut, User } from "lucide-react";
 import type { User as UserType } from "../../types";
-import { StyleHeader, HeaderInner, Brand, IconWrapper, BrandText, UserArea, UserInfo, Button } from "./styles"
+import { StyleHeader, HeaderInner, Brand, IconWrapper, BrandText, UserArea, UserInfo, LogoutButton } from "./styles"
 
 interface HeaderProps {
     user?: UserType | null;
@@ -32,9 +32,9 @@ export const Header = ({ user, onLogout, children }: HeaderProps) => {
                             <span>{user.name}</span>
                         </UserInfo>
                         {onLogout && (
-                            <Button onClick={onLogout} title="Logout">
+                            <LogoutButton onClick={onLogout} title="Logout">
                                 <LogOut/>
-                            </Button>
+                            </LogoutButton>
                         )}
                     </UserArea>
                 )}

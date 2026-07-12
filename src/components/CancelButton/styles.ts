@@ -12,7 +12,7 @@ export const ButtonCancel = styled.button`
     transition: color .3s;
     position: fixed;
     right: 1rem;
-    top: 7rem;
+    top: 2.8rem;
 
     &:hover {
         color: #c72a44;

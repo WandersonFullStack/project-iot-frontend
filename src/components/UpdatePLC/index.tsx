@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { plcService } from "../../services/deviceService";
+import { plcService } from "../../services/plcService";
 
 import { 
     CardUpdate, 
@@ -13,7 +13,7 @@ type Props = {
     onSuccess: () => void;
 };
 
-type PlcFormState = {
+type PlcFormUpdate = {
     name: string;
     ip: string;
     port_modbus: number;
@@ -28,7 +28,7 @@ type PlcFormState = {
 
 export function UpdatePLC({plcId, onSuccess}: Props) {
     const [ loading, setLoading ] = useState(false);
-    const [ formPlc, setFormPlc ] = useState<PlcFormState>(
+    const [ formPlc, setFormPlc ] = useState<PlcFormUpdate>(
         {
             name: "",
             ip: "",
@@ -44,14 +44,11 @@ export function UpdatePLC({plcId, onSuccess}: Props) {
     
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
-        const checked = e.target.ariaChecked;
         const numericFields = ["port_modbus", "port_tcp", "unit_id", "timeout"];
-        const checkBox = ["active"];
 
         setFormPlc((prev) => ({
                 ...prev,
                 [name]: numericFields.includes(name) ? Number(value) : value,
-                [name]: checkBox.includes(name) ? Boolean(checked) : checked,
             }));
         };
 
@@ -96,7 +93,7 @@ export function UpdatePLC({plcId, onSuccess}: Props) {
             <CardUpdate>
                 <h2>Update PLC</h2>
 
-                <form onSubmit={handleSubmit}>
+                <form id="form-modal" onSubmit={handleSubmit}>
                     <FormGroup>
                         <label htmlFor="name">Name: </label>
                         <input 
@@ -189,11 +186,11 @@ export function UpdatePLC({plcId, onSuccess}: Props) {
                             min={1} 
                         />
                     </FormGroup>
-
-                    <CreateButton type="submit" disabled={loading} >
-                        {loading ? "Sending..." : "Send"}
-                    </CreateButton>
                 </form>
+
+                <CreateButton form="form-modal" type="submit" disabled={loading} >
+                    {loading ? "Sending..." : "Send"}
+                </CreateButton>
             </CardUpdate>
         </>
     );

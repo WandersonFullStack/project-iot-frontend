@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
-import { deviceService, plcService } from "../../services/deviceService";
+import { deviceService } from "../../services/deviceService";
+import { plcService } from "../../services/plcService";
 import { DeviceOut } from "../../types";
 
 import { 
@@ -100,7 +101,7 @@ export function CreatePlc({onSuccess}: Props) {
             <CardCreate>
                 <h2>Create PLC</h2>
 
-                <form onSubmit={handleSubmit}>
+                <form id="form-modal" onSubmit={handleSubmit}>
                     <FormGroup>
                         <label htmlFor="device_id">Dvice: *</label>
                         <select 
@@ -217,11 +218,11 @@ export function CreatePlc({onSuccess}: Props) {
                             min={1} 
                         />
                     </FormGroup>
-
-                    <CreateButton type="submit" disabled={loading} >
-                        {loading ? "Sending..." : "Send"}
-                    </CreateButton>
                 </form>
+
+                <CreateButton form="form-modal" type="submit" disabled={loading} >
+                    {loading ? "Sending..." : "Send"}
+                </CreateButton>
                 
             </CardCreate>
         </>

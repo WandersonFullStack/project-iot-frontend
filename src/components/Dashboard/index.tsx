@@ -7,17 +7,19 @@ import {
     PanelLeft
 } from "lucide-react";
 
-import { plcService } from "../../services/deviceService";
-import { PLCOut } from "../../types";
+import { plcService } from "../../services/plcService";
+import { deviceService } from "../../services/deviceService";
+import { DeviceOut, PLCOut } from "../../types";
 
 import { useAuth } from "../../contexts/index";
 import { 
     Header, 
-    CreateDevice, 
+    CreateDevice,
+    DeviceFull, 
     AllDevices, 
     Plc,
     CreatePlc,
-    Popup 
+    FormModal
 } from "../index";
 
 import { 
@@ -25,39 +27,56 @@ import {
     Content, 
     Menu, 
     Main,
-    PlcList,
+    List,
     MenuTitle,
+    NavLink,
     InsertMenu
 } from "./styles";
 
-type PropsPlc = {
+type Props = {
     children?: React.ReactNode;
 };
 
-type ActiveView = "devices" | "plc" | "createDevice" | "createPLC";
+type ActiveView = "devices" | "plc" | "create-device" | "create-plc" | "device-full";
 
-export function Dashboard({children}: PropsPlc)  {
+export function Dashboard({children}: Props)  {
 
     const { user, logout } = useAuth();
 
     const [ listPlcs, setListPlcs ] = useState<PLCOut[]>([]);
-    const [ loadList, setLoadList ] = useState(false);
+    const [ loadListPlc, setLoadListPlc ] = useState(false);
+    const [ listPlcRefresh, setListPlcRefresh ] = useState(0);
     const [ menuOpen, setMenuOpen ] = useState(true);
     const [ activeView, setActiveView ] = useState<ActiveView>("devices");
     const [ plcId, setPlcId ] = useState<number | null>(null);
+    const [ deviceById, setDeviceById ] = useState<string | null>(null);
+    const [ deviceList, setDeviceList ] = useState<DeviceOut[]>([]);
+    const [ listDeviceRefresh, setListDeviceRefresh ] = useState(0);
+    const [ loadListDevice, setLoadListDevice ] = useState(false);
 
-    const loadListPlc = async () => {
-        try {
-            const response = await plcService.list();
-            setListPlcs(response);
-        } catch {
-            setListPlcs([]);
-        }
-    };
+    useEffect(() => { 
+        async function fetchListPlc () {
+            try {
+                const response = await plcService.list();
+                setListPlcs(response);
+            } catch {
+                setListPlcs([]);
+            }
+        };
+        fetchListPlc();
+    }, [listPlcRefresh]);
 
     useEffect(() => {
-        loadListPlc();
-    }, []);
+        async function fetchListDevice () {
+            try {
+                const response = await deviceService.list();
+                setDeviceList(response);
+            } catch {
+                setDeviceList([]);
+            }
+        };
+        fetchListDevice();
+    }, [listDeviceRefresh]);
 
     const handlePlc = (id: number) => {
         setPlcId(id);
@@ -77,76 +96,117 @@ export function Dashboard({children}: PropsPlc)  {
     };
 
     const handleListPlcs = () => {
-        setLoadList(true);
-        loadListPlc();
+        setLoadListPlc(true);
+        setListPlcRefresh(r => r + 1);
     };
 
     const handleListPlcsClose = () => {
-        setLoadList(false);
+        setLoadListPlc(false);
     };
 
     const handleNewPlc = () => {
-        setActiveView('createPLC');
+        setActiveView('create-plc');
     };
 
     const handleNewDevice = () => {
-        setActiveView('createDevice');
+        setActiveView('create-device');
+    };
+
+    const handleDevice = (id: string) => {
+        setDeviceById(id);
+        setActiveView("device-full");
+    };
+
+    const handleListDvices = () => {
+        setLoadListDevice(true);
+        setListDeviceRefresh(r => r + 1);
+    };
+
+    const handleListDvicesClose = () => {
+        setLoadListDevice(false);
     };
 
     return (
         <PageWrapper>
-            <Header user={user} onLogout={logout} />
             
             <Main >
                 {menuOpen ? (
-                    <Menu>
-                        <MenuTitle>
-                            <h3> Menu </h3>
-                            <button className="close-menu-button" onClick={handleCloseMenu}>
-                                <PanelLeft size={20} strokeWidth={2.5}/>
-                            </button>
-                        </MenuTitle>
-                        
-                        <div className="nav-section">
-                            <a className="menu-link" onClick={handleNewDevice} >
-                                <Plus size={16} /> 
-                                New Device 
-                            </a>
-                            <a className="menu-link" onClick={handleAllDevices}>
-                                <GalleryVerticalEnd size={16} />
-                                Devices
-                            </a>
-                            <a className="menu-link" onClick={handleListPlcs}>
-                                <Cpu size={16}/>
-                                PLCs
-                            </a>
-                            <>
-                                {loadList && (
-                                    <PlcList >
-                                        {children}
-                                        {listPlcs.map((plc) => (
-                                            <a 
-                                                className="nav-link" 
-                                                key={plc.id} 
-                                                onClick={() => handlePlc(plc.id)} 
-                                            >
-                                                {plc.name}
-                                            </a>
-                                        ))}
-                                        <div className="actions-list">
-                                            <button className="close-button" onClick={handleNewPlc}>
-                                                <Plus size={18}/>
-                                            </button>
+                    <Header user={user} onLogout={logout} >
+                        <Menu>
+                            <MenuTitle>
+                                <h3> Menu </h3>
+                                <button className="close-menu-button" onClick={handleCloseMenu}>
+                                    <PanelLeft size={20} strokeWidth={2.5}/>
+                                </button>
+                            </MenuTitle>
+                            
+                            <div className="nav-section">
+                                <NavLink className="menu-link" onClick={handleNewDevice} >
+                                    <Plus size={16} /> 
+                                    New Device 
+                                </NavLink>
+                                <NavLink className="menu-link" onClick={() => {handleAllDevices(); handleListDvices();}}>
+                                    <GalleryVerticalEnd size={16} />
+                                    Devices
+                                </NavLink>
+                                <>
+                                    {loadListDevice && (
+                                        <List>
+                                            {children}
+                                            {deviceList.map((device) => (
+                                                <a 
+                                                    className="itrem-link"
+                                                    key={device.device_id}
+                                                    onClick={() => handleDevice(device.device_id)}
+                                                >
+                                                    {device.name}
+                                                </a>
+                                            ))}
+                                            <div className="actions-list">
+                                                <button className="close-button" onClick={handleNewDevice}>
+                                                    <Plus size={18}/>
+                                                </button>
 
-                                            <button className="close-button" onClick={handleListPlcsClose}>
-                                                <ChevronUp size={16}/>
-                                            </button>
-                                        </div>
-                                    </PlcList>
-                                )}
-                            </>
-                        </div>
-                    </Menu>
+                                                <button className="close-button" onClick={handleListDvicesClose}>
+                                                    <ChevronUp size={16}/>
+                                                </button>
+                                            </div>
+                                        </List>
+                                    )}
+                                </>
+                                <NavLink  onClick={handleListPlcs}>
+                                    <Cpu size={16}/>
+                                    PLCs
+                                </NavLink>
+                                <>
+                                    {loadListPlc && (
+                                        <List >
+                                            {children}
+                                            {listPlcs.map((plc) => (
+                                                <a 
+                                                    className="itrem-link" 
+                                                    key={plc.id} 
+                                                    onClick={() => handlePlc(plc.id)} 
+                                                >
+                                                    {plc.name}
+                                                </a>
+                                            ))}
+                                            <div className="actions-list">
+                                                <button className="close-button" onClick={handleNewPlc}>
+                                                    <Plus size={18}/>
+                                                </button>
+
+                                                <button className="close-button" onClick={handleListPlcsClose}>
+                                                    <ChevronUp size={16}/>
+                                                </button>
+                                            </div>
+                                        </List>
+                                    )}
+                                </>
+                            </div>
+                        </Menu>
+                    </Header>
+                    
                 ) : (
                     <InsertMenu >
                         <button className="insert-menu-button" onClick={handleInsertMenu}>
@@ -155,8 +215,6 @@ export function Dashboard({children}: PropsPlc)  {
                     </InsertMenu>
                 )}
 
-                
-                
                 <Content $menuOpen={menuOpen}>
                     {activeView === "devices" && 
                         <AllDevices />
@@ -166,25 +224,28 @@ export function Dashboard({children}: PropsPlc)  {
                         <Plc controllerId={plcId} />
                     }
 
-                    {activeView === "createPLC" && 
-                        <Popup>
+                    {activeView === "create-plc" && 
+                        <FormModal>
                             <CreatePlc onSuccess={() => {
                                 setActiveView("devices");
-                                loadListPlc();
+                                setListPlcRefresh(r => r + 1);
                             }}/>
-                        </Popup>
+                        </FormModal>
                     }
 
-                    {activeView === "createDevice" &&
-                        <Popup>
+                    {activeView === "create-device" &&
+                        <FormModal>
                             <CreateDevice /> 
-                        </Popup>
+                        </FormModal>
+                    }
+
+                    {activeView === "device-full" &&
+                        <DeviceFull 
+                            deviceId={deviceById!}
+                        />
                     }
                 </Content>
             </Main>
-
-            
-
-        </PageWrapper>
+</PageWrapper>
     )
 }

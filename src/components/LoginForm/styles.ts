@@ -5,7 +5,6 @@ export const Wrapper = styled.div`
     align-items: center;
     justify-content: center;
     min-height: 100vh;
-    background-color: #1e1e2e;
     padding: 1.5rem;
 `
 

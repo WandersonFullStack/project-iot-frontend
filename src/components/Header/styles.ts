@@ -1,24 +1,25 @@
 import styled from "styled-components";
-// import { Link } from "react-router-dom";
 
 export const StyleHeader = styled.header`
     position: fixed;
     top: 0;
     left: 0;
-    right: 0;
-    width: 100%
-    z-index: 9999;
-    background: #181825;
-    padding: 0 1.5rem;
-    box-shadow: 0 20px 40px rgba(0,0,0, 0.7);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    width: 17.5rem;
+    height: 100vh;
+    background: #1e1e2e;
+    box-shadow: 8px 0 24px rgba(0,0,0, 0.25);
 `
 
 export const HeaderInner = styled.div`
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: space-between;
-    height: 4rem;
-    max-width: 112.5rem;
+    height: 100%;
+    width: 100%;
     margin: 0 auto;
 `
 
@@ -26,6 +27,9 @@ export const Brand = styled.div`
     display: flex;
     align-items: center;
     gap: 0.75rem;
+    height: 4rem;
+    width: 100%;
+    margin-left: 1rem;
 `
 
 export const IconWrapper = styled.div`
@@ -54,24 +58,13 @@ export const BrandText = styled.div`
     }
 `
 
-// export const DocLink = styled(Link)`
-//     display: flex;
-//     align-items: center;
-//     gap: 0.4rem;
-//     color: #a6adc8;
-//     text-decoration: none;
-//     font-size: 0.875rem;
-//     transition: color 0.2s;
-
-//     &:hover {
-//         color: #cdd6f4;
-//     }
-// `
 
 export const UserArea = styled.div`
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 0.75rem;
+    width: 100%;
+    height: 4rem;
 `
 
 export const UserInfo = styled.div`
@@ -80,13 +73,15 @@ export const UserInfo = styled.div`
     gap: 0.4rem;
     color: #cdd6f4;
     font-size: 0.875rem;
+    margin-left: .5rem;
 `
 
-export const Button = styled.button`
+export const LogoutButton = styled.button`
     background: none;
     border: 1px solid #313244;
     border-radius: 6px;
     padding: 0.4rem;
+    margin-right: .4rem;
     color: #a6adc8;
     cursor: pointer;
     display: flex;

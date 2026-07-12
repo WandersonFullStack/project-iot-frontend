@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
 import { Search, SquareX } from "lucide-react";
 
-import { plcService } from "../../services/deviceService";
+import { plcService } from "../../services/plcService";
 import { PLCOut } from "../../types";
-import { UpdatePLC, CancelButton, Popup } from "../index";
+import { UpdatePLC, CancelButton, FormModal } from "../index";
 
 import {
     Container, 
@@ -23,26 +23,26 @@ type ActiveView = 'updatePLC' | 'createRegister' | 'updateRegister' ;
 
 export function Plc({controllerId}: PlcProps) {
     const [ plc, setPlc ] = useState<PLCOut | null>(null);
+    const [ plcRefresh, setPlcRefresh ] = useState(0);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState<string | null>(null);
-    const [ isForm, setIsForm ] = useState(false)
+    const [ isForm, setIsForm ] = useState(false);
     const [ activeView, setActiveView ] = useState<ActiveView | null>(null);
 
 
-    const loadPlc = async () => {
-        try {
-            const response = await plcService.item(controllerId);
-            setPlc(response);
-        } catch {
-            setError("Erro ao carregar PLC.");
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    useEffect(() => {
-        loadPlc();
-    }, [controllerId]);
+    useEffect(() => { 
+        async function fetchPlc () {
+            try {
+                const response = await plcService.item(controllerId);
+                setPlc(response);
+            } catch {
+                setError("Erro ao carregar PLC.");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchPlc();
+    }, [controllerId, plcRefresh]);
 
     const handleUpdatePlc = () => {
         setActiveView('updatePLC');
@@ -98,7 +98,7 @@ export function Plc({controllerId}: PlcProps) {
                     
                     <DashSection>
                         {isForm && (
-                            <Popup>
+                            <FormModal>
                                 <CancelButton onClick={handleFormClose}>
                                     <SquareX/>
                                 </CancelButton>
@@ -107,8 +107,7 @@ export function Plc({controllerId}: PlcProps) {
                                         <UpdatePLC 
                                             plcId={plc.id} 
                                             onSuccess={() => {
-                                                setActiveView(null);
-                                                loadPlc();
+                                                setPlcRefresh(r => r + 1);
                                             }}
                                         />
                                         
@@ -122,7 +121,7 @@ export function Plc({controllerId}: PlcProps) {
                                     <UpdateRegister />
                                 }
 
-                            </Popup>
+                            </FormModal>
                         )}
                     </DashSection>
                 </Container>

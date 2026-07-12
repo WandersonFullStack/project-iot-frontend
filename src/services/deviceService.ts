@@ -1,6 +1,6 @@
 import { api } from "./authService";
 
-import { DeviceIn, DeviceOut, PLCIn, PLCOut } from "../types";
+import { DeviceIn, DeviceOut, DeviceUpdate, PLCOut } from "../types";
 
 export const deviceService = {
     async create(deviceData: DeviceIn): Promise<DeviceOut> {
@@ -18,31 +18,13 @@ export const deviceService = {
         return response.data;
     },
 
+    async update(deviceId: string, deviceData: DeviceUpdate): Promise<DeviceUpdate> {
+        const response = await api.patch(`api/v1/devices/${deviceId}`, deviceData);
+        return response.data;
+    },
+
     async plcByDevice(deviceId: string): Promise<PLCOut | null> {
         const response = await api.get(`api/v1/devices/${deviceId}/plc`);
         return response.data;
     }
-}
-
-export const plcService = {
-    async create(plcData: PLCIn): Promise<PLCOut> {
-        const response = await api.post('api/v1/plcs', plcData);
-        return response.data;
-    },
-
-    async list(): Promise<PLCOut[]> {
-        const response = await api.get('api/v1/plcs');
-        return response.data;
-    },
-
-    async item(controllerId: number): Promise<PLCOut> {
-        const response = await api.get(`api/v1/plcs/${controllerId}`);
-        return response.data;
-    },
-
-    async update(plcId: number, plcData): Promise<PLCOut> {
-        const response = await api.patch(`api/v1/plcs/${plcId}`, plcData);
-        return response.data;
-    },
-
 }

@@ -1,6 +1,10 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
+import HeroImg from "../../assets/hero-img.jpeg";
+import FeaturesImg from "../../assets/features-img.jpg";
+import CtaImg from "../../assets/cta-img.jpg";
+
 export const PageWrapper = styled.div`
     min-height: 100vh;
     background-color: #1e1e2e;
@@ -70,6 +74,51 @@ export const DashboardButton = styled.button`
 
 /* ── Header nav (inside Home's <Header> children) ── */
 
+export const HeaderInner = styled.header`
+    max-width: 100vw;
+    height: 4rem;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+`
+
+export const Brand = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    height: 100%;
+    width: 17.5rem;
+    margin-left: 1rem;
+`
+
+export const IconWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #08692d;
+    border-radius: 8px;
+    padding: 0.2rem;
+    margin-right: 0.3rem;
+    color: #fff;
+`
+
+export const BrandText = styled.div`
+    h1 {
+        font-size: 1rem;
+        font-weight: 700;
+        color: #cdd6f4;
+        margin: 0;
+    }
+
+    p {
+        font-size: 0.75rem;
+        color: #6c7086;
+        margin: 0;
+    }
+`
+
 export const HomeNav = styled.nav`
     display: flex;
     align-items: center;
@@ -107,8 +156,13 @@ export const NavLink = styled(Link)`
 /* ── Hero Section ── */
 
 export const HeroSection = styled.section`
-    padding: 4rem 1.5rem;
+    padding: 0 1.5rem;
     flex: 1;
+
+    background-image: linear-gradient(rgba(30,30,46, 0.48), rgba(30,30,46, 0.48)), url(${HeroImg});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 `
 
 export const HeroInner = styled.div`
@@ -179,13 +233,18 @@ export const HeroFormWrapper = styled.div`
 /* ── Features Section ── */
 
 export const FeaturesSection = styled.section`
-    min-height: 100vh;
-    padding: 4rem 1.5rem;
+    min-height: 50vh;
+    padding: 0 1.5rem;
+
+    background-image: linear-gradient(rgba(30,30,46, 0.3), rgba(30,30,46, 0.3)), url(${FeaturesImg});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 `
 
 export const FeaturesInner = styled.div`
     max-width: 1200px;
-    margin: 0 auto;
+    margin: 0.5rem auto;
 `
 
 export const SectionHeader = styled.div`
@@ -201,7 +260,7 @@ export const SectionHeader = styled.div`
 
     p {
         font-size: 0.9rem;
-        color: #6c7086;
+        color: #cdd6f4;
         margin: 0;
     }
 `
@@ -254,6 +313,11 @@ export const FeatureCard = styled.div`
 export const CTASection = styled.section`
     padding: 4rem 1.5rem;
     text-align: center;
+
+    background-image: linear-gradient(rgba(30,30,46, 0.5), rgba(30,30,46, 0.5)), url(${CtaImg});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 `
 
 export const CTAInner = styled.div`
@@ -273,7 +337,7 @@ export const CTAInner = styled.div`
 
     p {
         font-size: 0.9rem;
-        color: #6c7086;
+        color: #cdd6f4;
         margin: 0;
     }
 `

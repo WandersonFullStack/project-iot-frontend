@@ -4,40 +4,42 @@ import { deviceService } from "../../services/deviceService";
 import { FormModal } from "../index";
 
 import {
-    CardCreate, 
-    FormGroup, 
-    CreateButton, 
-    PopupOverlay, 
-    PopupCard 
+    CardUpdate,
+    FormGroup,
+    CreateButton
 } from "./styles";
 
-type DeviceFormState = {
+type DeviceFormUpdate = {
     name: string;
     description: string;
     topics: string;
+    active: boolean;
 };
 
+type Props = {
+    deviceId: string;
+    onSuccess: () => void;
+};
 
-export function CreateDevice() {
+export function UpdateDevice({deviceId, onSuccess}: Props) {
     const [ loading, setLoading ] = useState(false);
-    const [ formDevice, setFormDevice ] = useState<DeviceFormState>(
-            {
-                name: '',
-                description: '',
-                topics: '',
-            }
-        );
-    const [ apiKey, setApiKey ] = useState<string | null>(null);
-    const [ copied, setCopied ] = useState(false);
-    
+    const [formDevice, setFormDevice ] = useState<DeviceFormUpdate>(
+        {
+            name: '',
+            description: '',
+            topics: '',
+            active: true,
+        }
+    );
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
 
         setFormDevice((prev) => ({
-                ...prev,
-                [name]: value
-            }));
-        };
+            ...prev,
+            [name]: value
+        }));
+    };
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -45,50 +47,35 @@ export function CreateDevice() {
 
         try {
             const topics = formDevice.topics
-            .split(',')
+            .split(', ')
             .map((topic) => topic.trim())
             .filter(Boolean);
 
-            const response = await deviceService.create({
+            await deviceService.update(deviceId, {
                 name: formDevice.name,
                 description: formDevice.description,
                 topics,
+                active: formDevice.active,
             });
             setFormDevice({
                 name: '',
                 description: '',
                 topics: '',
+                active: true,
             });
-            setApiKey(response.api_key);
-            setCopied(false);
+            onSuccess();
         } catch (error) {
-            console.error("Erro ao criar device:", error);
+            console.error("Erro ao atualizar device.", error);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleCopyApiKey = async () => {
-        if (!apiKey) return;
-
-        try {
-            await navigator.clipboard.writeText(apiKey);
-            setCopied(true);
-        } catch (error) {
-            console.error("Erro ao copiar api_key:", error);
-        }
-    };
-
-    const handleClosePopup = () => {
-        setApiKey(null);
-        setCopied(false);
-    };
-
     return (
         <FormModal>
-            <CardCreate>
-                <h2>Create Device</h2>
-
+            <CardUpdate>
+                <h2>Update Device</h2>
+            
                 <form id="form-modal" onSubmit={handleSubmit}>
                     <FormGroup>
                         <label htmlFor="name">Name: *</label>
@@ -102,7 +89,7 @@ export function CreateDevice() {
                             maxLength={40} 
                         />
                     </FormGroup>
-
+            
                     <FormGroup>
                         <label htmlFor="description">Description: *</label>
                         <input 
@@ -113,7 +100,7 @@ export function CreateDevice() {
                             maxLength={255} 
                         />
                     </FormGroup>
-
+            
                     <FormGroup>
                         <label htmlFor="topics">Topics: *</label>
                         <input 
@@ -125,39 +112,13 @@ export function CreateDevice() {
                             placeholder="house/sensors/temperature" 
                         />
                     </FormGroup>
+            
                 </form>
-
+                            
                 <CreateButton form="form-modal" type="submit" disabled={loading} >
                     {loading ? "Sending..." : "Send"}
                 </CreateButton>
-                
-            </CardCreate>
-
-            {apiKey && (
-                <PopupOverlay>
-                    <PopupCard>
-                        <h3>Device criado com sucesso !</h3>
-                        <p>Salve está api_key agora.
-                            <br />
-                            Ela não poderá ser recuperada depois.
-                            <br />
-                            A mesma deverá ser ultilizada para credenciar a assinatura de um dispositivo IoT.
-                        </p>
-                            
-                        <textarea readOnly value={apiKey} rows={1} />
-
-                        <div className="popup-actions">
-                            <button onClick={handleCopyApiKey} >
-                                {copied ? "Copiado" : "Copiar"}
-                            </button>
-
-                            <button onClick={handleClosePopup}>
-                                Done
-                            </button>
-                        </div>
-                    </PopupCard>
-                </PopupOverlay>
-            )}
+            </CardUpdate>
         </FormModal>
-    );
+    )
 }

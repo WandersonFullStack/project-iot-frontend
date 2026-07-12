@@ -1,7 +1,8 @@
 import { useState, useEffect } from "react";
-import { Info } from "lucide-react";
+import { Info, Trash2 } from "lucide-react";
 
 import { deviceService } from "../../services/deviceService";
+import { plcService } from "../../services/plcService";
 import { DeviceOut, PLCOut } from "../../types";
 
 import { 
@@ -9,21 +10,24 @@ import {
     CardDevice, 
     TitleDevice, 
     Status, 
-    FooterDevice
+    FooterDevice,
+    TrashButton
 } from "./styles";
 
 type PropsDevice = {
     deviceId: string;
 };
 
+
 export function Device({deviceId}: PropsDevice) {
-    const [ device, setDevice ] = useState<DeviceOut | null>(null);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState<string | null>(null);
+    const [ device, setDevice ] = useState<DeviceOut | null>(null);
     const [ existPlc, setExistPlc ] = useState<PLCOut | null>(null);
+    const [ plcRefresh, setPlcRefresh ] = useState(0);
     
     useEffect(() => {
-        const loadDevice = async () => {
+        async function fetchDevice() {
             try {
                 const response = await deviceService.item(deviceId);
                 setDevice(response);
@@ -33,12 +37,12 @@ export function Device({deviceId}: PropsDevice) {
                 setLoading(false);
             }
         };
-
-        loadDevice();
+        fetchDevice();
     }, [deviceId]);
 
+
     useEffect(() => {
-        const loadPlc = async () => {
+        async function fetchPlc() {
             try {
                 const response = await deviceService.plcByDevice(deviceId);
                 setExistPlc(response);
@@ -46,9 +50,21 @@ export function Device({deviceId}: PropsDevice) {
                 setError("Erro ao buscar PLC.");
             }
         };
+        fetchPlc();
+    }, [deviceId, plcRefresh]);
         
-        loadPlc();
-    }, [deviceId]);
+    
+
+    const handleDeletePlc = async (plcId: number) => {
+        try {
+            await plcService.delete(plcId);
+            alert('PLC deletado com sucesso!');
+            setPlcRefresh(r => r + 1);
+        } catch {
+            alert('Erro ao deletar PLC.');
+        }
+    };
+
 
     if (loading) return <span>Carregando dispositivo...</span>
     if (error) return <span>{error}</span>
@@ -62,36 +78,39 @@ export function Device({deviceId}: PropsDevice) {
                 {device &&
                     
                     <CardDevice key={device.device_id}>
-                        <div className="header">
-                            
+                        <div className="header">                            
                             <TitleDevice>
                                 {device.name} 
                             </TitleDevice>
-                            
-                            <Status $isStatus={isStatus}>
-                                {device.status}
-                            </Status>
-                                
+                                                            
                             <div className="info" data-tooltip={device.description}>
                                 <Info size={20}/>
                             </div>
 
+                            <Status $isStatus={isStatus}>
+                                {device.status}
+                            </Status>
                         </div>
                         <div>
 
                         </div>
                         <FooterDevice>
-                            {existPlc && (
+                            <p>PLC active: </p>
+                            {existPlc ? (
                                 <>
-                                    <h3>
-                                        <p>PLC active: </p>
-                                        {existPlc.name}
-                                    </h3>
+                                    <h3>{existPlc.name}</h3>
+                                    <TrashButton onClick={() => handleDeletePlc(existPlc.id)}>
+                                        <Trash2  size={18}/>
+                                    </TrashButton>
                                 </>
+                            ) : (
+                                <p>none</p>
                             )}
                         </FooterDevice>
                     </CardDevice>
                 }
+
+                
             </CardContainer>
             
         </>

@@ -10,21 +10,20 @@ export const PageWrapper = styled.div`
     background-color: #1e1e2e;
     display: flex;
     flex-direction: column;
-    padding-top: 4rem;
 `
 
 export const Main = styled.main`
     width: 100%;
-    min-height: calc(100vh - 4rem);
+    height: 100%;
 `
 
 export const InsertMenu = styled.aside`
     position: fixed;
-    top: 4.1rem;
+    top: 0;
     left: 0;
     z-index: 900;
     width: 3.125rem;
-    height: calc(100vh - 4rem);
+    height: 100vh;
     display: flex;
     justify-content: center;
     box-shadow: 8px 0 24px rgba(0,0,0, 0.25);
@@ -47,48 +46,12 @@ export const InsertMenu = styled.aside`
 `
 
 export const Menu = styled.aside`
-    position: fixed;
-    top: 4.1rem;
-    left: 0;
-    z-index: 1000;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    width: 17.5rem;
-    height: calc(100vh - 4rem);
-    background: #1e1e2e;
-    box-shadow: 8px 0 24px rgba(0,0,0, 0.25);
+    width: 100%;
+    height: 100%;
+    padding: 1rem 1rem 0 1.6rem;
 
-    .nav-section {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        height: auto;
-        padding: 1rem 1rem 0 1.6rem;
-
-        .menu-link {
-            border: none;
-            text-decoration: none;
-            color: #AAACAD;
-            font-size: 14px;
-            width: 95%;
-            height: 1.5rem;
-            cursor: pointer;
-
-            display: flex;
-            justify-content: start;
-            align-items: center;
-            gap: 2rem;
-            padding: 0.2rem;
-            transition: color 0.3s, background 0.3s;
-
-            &:hover{
-                color: #eee;
-                background: rgba(31,49,107, 0.3);
-            }
-        }
-    }
 `
 
 export const MenuTitle = styled.div`
@@ -98,7 +61,6 @@ export const MenuTitle = styled.div`
     align-items: center;
     width: 93%;
     max-width: 18.75rem;
-    margin: 1.6rem;
 
     h3 {
         color: #eee;
@@ -120,18 +82,39 @@ export const MenuTitle = styled.div`
     }
 `
 
+export const NavLink = styled.a`
+    border: none;
+    text-decoration: none;
+    color: #AAACAD;
+    font-size: 14px;
+    width: 95%;
+    height: 1.5rem;
+    cursor: pointer;
+
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    gap: 2rem;
+    padding: 0.2rem;
+    transition: color 0.3s, background 0.3s;
+
+    &:hover{
+        color: #eee;
+        background: rgba(31,49,107, 0.3);
+    }
+`
+
 export const Content = styled.section<ContentProps>`
     max-width: ${({ $menuOpen }) => ($menuOpen ? 'calc(100% - 17.5rem)' : 'calc(100% - 3.125rem)')};
-    min-height: calc(100vh - 4rem);
+    min-height: 100%;
     display: flex;
     justify-content: center;
     align-items: flex-start;
     margin-left: ${({ $menuOpen }) => ($menuOpen ? '17.5rem' : '3.125rem')};
     transition: margin-left 0.3s ease, width 0.3s ease;
-    padding: 0.2rem 0 0 0.2rem;
 `
 
-export const PlcList = styled.div`
+export const List = styled.div`
     display: flex;
     flex-direction: column;
     gap: 5px;
@@ -139,10 +122,9 @@ export const PlcList = styled.div`
     max-width: 18.75rem;
     margin-top: 0.2rem;
     padding-top: 0.2rem;
-    border-top: solid #313844 1px;
     border-bottom: solid #313844 1px;
 
-    .nav-link {
+    .itrem-link {
         width: 95%;
         height: 1.3rem;
         display: flex;
@@ -165,7 +147,8 @@ export const PlcList = styled.div`
         display: flex;
         align-atems: center;
         justify-content: space-evenly;
-        margin-top: 1rem;
+        margin-top: .5rem;
+        margin-bottom: .3rem;
         gap: .2rem;
     }
 
