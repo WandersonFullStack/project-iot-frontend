@@ -1,6 +1,6 @@
 import { api } from "./authService";
 
-import { DeviceIn, DeviceOut, DeviceUpdate, PLCOut } from "../types";
+import { DeviceIn, DeviceOut, DeviceUpdate, PLCOut, MessageOut, RenewalKeyOut } from "../types";
 
 export const deviceService = {
     async create(deviceData: DeviceIn): Promise<DeviceOut> {
@@ -25,6 +25,16 @@ export const deviceService = {
 
     async plcByDevice(deviceId: string): Promise<PLCOut | null> {
         const response = await api.get(`api/v1/devices/${deviceId}/plc`);
+        return response.data;
+    },
+
+    async messages(deviceId: string): Promise<MessageOut[]> {
+        const response = await api.get(`api/v1/devices/${deviceId}/messages`);
+        return response.data;
+    },
+
+    async renewKey(deviceId: string): Promise<RenewalKeyOut> {
+        const response = await api.post(`api/v1/devices${deviceId}/renew`);
         return response.data;
     }
 }

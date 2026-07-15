@@ -40,6 +40,14 @@ export const Card = styled.div`
         margin-bottom: 0.5rem;
         color: #6c7086;
     }
+
+    .actions {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-evenly;
+        align-items: center;
+        width: 100%;    
+    }
 `
 
 export const MetricsCard = styled.div`
@@ -49,9 +57,6 @@ export const MetricsCard = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
-    border: solid #313348 1px;
-    border-radius: 0.5rem;
-    box-shadow: 0 5px 35px rgba(0,0,0, 0.5);
 `
 
 export const ContentCard = styled.div`
@@ -61,7 +66,6 @@ export const ContentCard = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem;
-    border: solid #313348 1px;
     border-radius: 0.5rem;
     box-shadow: 0 5px 35px rgba(0,0,0, 0.5);
 
@@ -90,7 +94,6 @@ export const Button = styled.button`
     height: 35px;
     border: solid #08692d 1px;
     border-radius: 5px;
-    margin-top: 1rem;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
@@ -102,3 +105,101 @@ export const Button = styled.button`
         background: #08692d;
     }
 `
+
+export const PopupOverlay = styled.div`
+    position: fixed;
+    inset: 0;
+    z-index: 1200;
+    display: flex;
+    align-items: center;
+    justfy-content: center;
+    background: rgba(0,0,0, 0.8);
+    padding: 0 0 0 450px;
+`
+
+export const PopupCard = styled.div`
+    width: 100%;
+    max-width: 430px;
+    align-items: center;
+    background: #020814;
+    color: #eee;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 20px 60px rgba(0,0,0, 0.35);
+
+    h3 {
+        margin-bottom: 12px;
+    }
+
+    textarea {
+        width: 95%;
+        padding: 10px;
+        text-align: center;
+        border-radius: 10px;
+        margin-top: 15px;
+        border: none;
+        resize: none;
+        font-size: 14px;
+    }
+
+    .popup-actions {
+        display: flex;
+        justify-content: end;
+        padding: 10px;
+        gap: 15px;
+
+
+        button {
+            color: #000;
+            background-color: #08692d;
+            width: 80px;
+            height: 35px;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 500;
+            cursor: pointer;
+
+            &:hover {
+                opacity: 0.7;
+            }
+        }
+    }
+`
+
+export const MessagesTable = styled.div`
+    width: calc(100% - 5rem);
+    max-width: 1600px;
+    height: 45vh;
+    padding: 0 1rem;
+`
+
+export const Table = styled.table`
+    border-collapse: collapse;
+    border: 2px solid rgb(140 140 140);
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+    width: 100%;
+    max-height: 40vh;
+    overflow: auto;
+`
+
+export const TableHead = styled.thead`
+    background-color: rgb(228 240 245);
+`
+
+export const TableContent = styled.tr`
+    &:nth-of-type(even) {
+        background-color: rgb(237 238 242);
+    }
+`
+
+export const TableItem = styled.th`
+    border: 1px solid rgb(160 160 160);
+    padding: 8px 10px;
+`
+
+export const TableBody = styled.tbody``
+
+export const TableValue = styled.td``

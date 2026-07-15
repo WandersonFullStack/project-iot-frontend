@@ -137,11 +137,12 @@ export function CreateDevice() {
                 <PopupOverlay>
                     <PopupCard>
                         <h3>Device criado com sucesso !</h3>
-                        <p>Salve está api_key agora.
+                        <p>
+                            Save this api_key now.
                             <br />
-                            Ela não poderá ser recuperada depois.
+                            It cannot be recovered later.
                             <br />
-                            A mesma deverá ser ultilizada para credenciar a assinatura de um dispositivo IoT.
+                            It must be used to authenticate the signature of an IoT device.
                         </p>
                             
                         <textarea readOnly value={apiKey} rows={1} />
