@@ -51,12 +51,26 @@ export const Card = styled.div`
 `
 
 export const MetricsCard = styled.div`
-    width: 80%;
+    width: 100%;
     height: 70%;
     padding: 1rem;
     display: flex;
     flex-direction: column;
     align-items: center;
+
+    span {
+        color: #6c7086;
+        font-size: 0.85rem;
+    }
+`
+
+export const ContentMetric = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    margin-top: 1.5rem;
 `
 
 export const ContentCard = styled.div`
@@ -176,30 +190,41 @@ export const MessagesTable = styled.div`
 
 export const Table = styled.table`
     border-collapse: collapse;
-    border: 2px solid rgb(140 140 140);
+    border: 2px solid #6c7086;
     font-family: sans-serif;
     font-size: 0.8rem;
     letter-spacing: 1px;
+    color: #a6adc8;
     width: 100%;
     max-height: 40vh;
-    overflow: auto;
+    box-shadow: 0 -5px 25px rgba(0, 0, 0, 0.35);
 `
 
 export const TableHead = styled.thead`
-    background-color: rgb(228 240 245);
+    background-color: rgba(57, 61, 77, 0.8);
+    height: 0.5rem;
 `
 
 export const TableContent = styled.tr`
     &:nth-of-type(even) {
-        background-color: rgb(237 238 242);
+        background-color: rgb(160 160 160);
     }
 `
 
 export const TableItem = styled.th`
     border: 1px solid rgb(160 160 160);
-    padding: 8px 10px;
+    padding: 5px 8px;
+    width: 14.285rem;
 `
 
-export const TableBody = styled.tbody``
+export const TableBody = styled.tbody`
+    height: 100%;
+    overflow: auto;
+`
 
-export const TableValue = styled.td``
+export const TableValue = styled.td`
+    border: 1px solid rgb(160 160 160);
+    padding: 5px 8px;
+    width: 14.285rem;
+    text-align: center;
+`

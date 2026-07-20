@@ -1,9 +1,17 @@
 import { useState, useEffect } from "react";
-import { Info, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import Speedometer from "react-d3-speedometer";
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend
+} from "chart.js";
 
 import { deviceService } from "../../services/deviceService";
+import { useDeviceWebSocket } from "../../services/useDeviceWebSocket";
 import { plcService } from "../../services/plcService";
-import { DeviceOut, PLCOut } from "../../types";
+import { DeviceOut, MessageOut, PLCOut } from "../../types";
 
 import { 
     CardContainer, 
@@ -18,6 +26,7 @@ type PropsDevice = {
     deviceId: string;
 };
 
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function Device({deviceId}: PropsDevice) {
     const [ loading, setLoading ] = useState(true);
@@ -25,6 +34,7 @@ export function Device({deviceId}: PropsDevice) {
     const [ device, setDevice ] = useState<DeviceOut | null>(null);
     const [ existPlc, setExistPlc ] = useState<PLCOut | null>(null);
     const [ plcRefresh, setPlcRefresh ] = useState(0);
+    const [ isMessage, setIsMessages ] = useState<MessageOut[]>([]);
     
     useEffect(() => {
         async function fetchDevice() {
@@ -40,6 +50,21 @@ export function Device({deviceId}: PropsDevice) {
         fetchDevice();
     }, [deviceId]);
 
+    useEffect(() => {
+        const loadMessages = async () => {
+            try {
+                const response = await deviceService.messages(deviceId);
+                setIsMessages(response);
+            } catch (error) {
+                return error
+            }
+        }
+        loadMessages();
+    }, [deviceId]);
+
+    useDeviceWebSocket(deviceId, (newMsg) => {
+        setIsMessages(prev => [newMsg, ...prev]);
+    });
 
     useEffect(() => {
         async function fetchPlc() {
@@ -51,9 +76,7 @@ export function Device({deviceId}: PropsDevice) {
             }
         };
         fetchPlc();
-    }, [deviceId, plcRefresh]);
-        
-    
+    }, [deviceId, plcRefresh]);        
 
     const handleDeletePlc = async (plcId: number) => {
         try {
@@ -64,6 +87,13 @@ export function Device({deviceId}: PropsDevice) {
             alert('Erro ao deletar PLC.');
         }
     };
+
+    const latestPayload = isMessage[0]?.payload ?? null;
+    const numericValue = latestPayload !== null ? parseFloat(latestPayload) : NaN;
+    const isNumeric = !isNaN(numericValue);
+
+    const GAUGE_MAX = 350;
+    const gaugeValue = isNumeric ? Math.min(Math.max(numericValue, 0), GAUGE_MAX) : 0;
 
 
     if (loading) return <span>Carregando dispositivo...</span>
@@ -82,17 +112,24 @@ export function Device({deviceId}: PropsDevice) {
                             <TitleDevice>
                                 {device.name} 
                             </TitleDevice>
-                                                            
-                            <div className="info" data-tooltip={device.description}>
-                                <Info size={20}/>
-                            </div>
 
                             <Status $isStatus={isStatus}>
                                 {device.status}
                             </Status>
                         </div>
-                        <div>
-
+                        <div className="chart-container">
+                            <Speedometer
+                                maxValue={GAUGE_MAX}
+                                value={gaugeValue}
+                                needleColor="#a6adc8"
+                                startColor="#08692d"
+                                endColor="#EB0D09"
+                                segments={5}
+                                currentValueText={`${numericValue}`}
+                                textColor="#a6adc8"
+                                width={230}
+                                height={150}
+                            />
                         </div>
                         <FooterDevice>
                             <p>PLC active: </p>

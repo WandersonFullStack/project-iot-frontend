@@ -1,8 +1,17 @@
 import { useState, useEffect } from "react";
 import { SquareX } from "lucide-react";
 import toast from "react-hot-toast";
+// import { Doughnut } from "react-chartjs-2";
+import Speedometer from "react-d3-speedometer";
+import {
+    Chart as ChartJS,
+    ArcElement,
+    Tooltip,
+    Legend,
+} from "chart.js";
 
 import { deviceService } from "../../services/deviceService";
+import { useDeviceWebSocket } from "../../services/useDeviceWebSocket";
 import { DeviceOut, MessageOut } from "../../types";
 import { UpdateDevice, FormModal, CancelButton } from "../index";
 
@@ -11,6 +20,7 @@ import {
     ContentSection,
     Card,
     MetricsCard,
+    ContentMetric,
     ContentCard,
     Button,
     MessagesTable,
@@ -29,6 +39,8 @@ type PropsDevice = {
 };
 
 type ActiveView = 'device-view' | 'update-form' | 'NewAPIKey';
+
+ChartJS.register(ArcElement, Tooltip, Legend);
 
 export function DeviceFull({deviceId}: PropsDevice) {
     const [ loading, setLoading ] = useState(true);
@@ -65,6 +77,10 @@ export function DeviceFull({deviceId}: PropsDevice) {
         };
         loadMessages();
     }, [deviceId]);
+
+    useDeviceWebSocket(deviceId, (newMsg) => {
+        setIsMessages(prev => [newMsg, ...prev]);
+    });
 
     useEffect(() => {
         async function fetchApiKey() {
@@ -109,6 +125,32 @@ export function DeviceFull({deviceId}: PropsDevice) {
         }
     };
 
+    const latestPayload = isMessages[0]?.payload ?? null;
+    const numericValue = latestPayload !== null ? parseFloat(latestPayload) : NaN;
+    const isNumeric = !isNaN(numericValue);
+
+    const GAUGE_MAX = 350;
+    const gaugeValue = isNumeric ? Math.min(Math.max(numericValue, 0), GAUGE_MAX) : 0;
+
+    // const gaugeData = {
+    //     labels: ['Value', ''],
+    //     datasets: [{
+    //         data: [gaugeValue, GAUGE_MAX - gaugeValue],
+    //         backgroundColor: ['#08692d', '#1c1c2e'],
+    //         borderWidth: 0,
+    //         circumference: 180,
+    //         rotation: 270,
+    //     }],
+    // };
+
+    // const gaugeOptions = {
+    //     plugins: {
+    //         legend: { display: false},
+    //         Tooltip: { enabled: false},
+    //     },
+    //     cutout: '75%',
+    // };
+
     if (loading) return <span>Loading device...</span>
     if (error) return <span>{error}</span>
     
@@ -123,6 +165,37 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                     <MetricsCard>
                                         <h3>{device.name}</h3>
 
+                                        {/* <div style={{ position: 'relative' }}>
+                                            <Doughnut data={gaugeData} options={gaugeOptions} />
+                                            <div style={{
+                                                position: 'absolute',
+                                                bottom: '0',
+                                                width: '100%',
+                                                textAlign: 'center',
+                                                color: '#a6adc8',
+                                            }}>
+                                                <strong style={{ fontSize: '1.4rem' }}>
+                                                    {isNumeric ? numericValue : latestPayload ?? '-'}
+                                                </strong>
+                                                <div style={{ fontSize: '0.7rem', color: '#6c7086' }}>
+                                                    {isMessages[0]?.topic ?? 'latest'}
+                                                </div>
+                                            </div>
+                                        </div> */}
+                                        <ContentMetric>
+                                            <Speedometer
+                                                maxValue={GAUGE_MAX}
+                                                value={gaugeValue}
+                                                needleColor="#a6adc8"
+                                                startColor="#08692d"
+                                                endColor="#EB0D09"
+                                                segments={5}
+                                                currentValueText={`${numericValue}`}
+                                                textColor="#a6adc8"
+                                                width={360}
+                                                height={270}
+                                            />
+                                        </ContentMetric>
                                     </MetricsCard>
                                     <div className="actions">
                                         <Button onClick={handleOpenForm}>
@@ -165,8 +238,7 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                             <TableItem scope="col">Payload</TableItem>
                                             <TableItem scope="col">QoS</TableItem>
                                             <TableItem scope="col">Retain</TableItem>
-                                            <TableItem scope="col">Content-Type</TableItem>
-                                            <TableItem scope="col">Properts</TableItem>
+                                            <TableItem scope="col">Properties</TableItem>
                                             <TableItem scope="col">Received-in</TableItem>
                                         </TableContent>
                                     </TableHead>
@@ -177,7 +249,6 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                                 <TableValue>{message.payload ?? '-'}</TableValue>
                                                 <TableValue>{message.qos}</TableValue>
                                                 <TableValue>{message.retain ? 'Yes' : 'No'}</TableValue>
-                                                <TableValue>{message.content_type ?? '-'}</TableValue>
                                                 <TableValue>{message.user_props ?? '-'}</TableValue>
                                                 <TableValue>
                                                     {new Date(message.received_in).toLocaleString()}

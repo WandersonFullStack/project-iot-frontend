@@ -18,7 +18,7 @@ export const Header = ({ user, onLogout, children }: HeaderProps) => {
                         <CircuitBoard size={32}/>
                     </IconWrapper>
                     <BrandText>
-                        <h1>MagAut Broker</h1>
+                        <h1>MAB View</h1>
                         <p>Powered by MagAutomations</p>
                     </BrandText>
                 </Brand>

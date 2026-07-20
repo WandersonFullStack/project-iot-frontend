@@ -40,29 +40,14 @@ export const CardDevice = styled.div`
         width: 100%;
         margin-top: 5px;
         border-bottom: 1px solid #313844;
+    }
 
-        .info {
-            width: 2rem;
-            cursor: pointer;
-            background: transparent;
-            position: relative;
-            padding-top: .3rem;
-                
-            &:hover::after {
-                content: attr(data-tooltip);
-                position: absolute;
-                top: -32px;
-                left: 50%;
-                transform: translateX(-50%);
-                background: #555;
-                color: #fff;
-                padding: 4px 8px;
-                border-radius: 6px;
-                white-space: nowrap;
-                font-size: 14px;
-            }
-        }
-
+    .chart-container {
+        width: calc(100% - 1rem);
+        height: 80%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 `
 
