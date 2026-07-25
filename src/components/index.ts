@@ -14,3 +14,4 @@ export { CreatePlc } from "./CreatePlc";
 export { UpdatePLC } from "./UpdatePLC";
 export { UpdateDevice } from "./UpdateDevice";
 export { DeviceFull } from "./DeviceFull";
+export { Register } from "./Register";

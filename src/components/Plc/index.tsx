@@ -2,8 +2,9 @@ import { useState, useEffect } from "react";
 import { Search, SquareX } from "lucide-react";
 
 import { plcService } from "../../services/plcService";
-import { PLCOut } from "../../types";
-import { UpdatePLC, CancelButton, FormModal } from "../index";
+import { registerService } from "../../services/registerService";
+import { MapRegisterOut, PLCOut,  } from "../../types";
+import { UpdatePLC, CancelButton, FormModal, Register } from "../index";
 
 import {
     Container, 
@@ -11,23 +12,26 @@ import {
     SearchArea,
     Title,
     DashSection,
+    RegisterContainer,
     PlcConfig,
     ConfigContent,
 } from "./styles"
 
 type PlcProps = {
     controllerId: number;
+    children?: React.ReactNode;
 };
 
-type ActiveView = 'updatePLC' | 'createRegister' | 'updateRegister' ;
+type ActiveView = 'registers' | 'updatePLC' | 'createRegister' | 'updateRegister' ;
 
-export function Plc({controllerId}: PlcProps) {
+export function Plc({controllerId, children}: PlcProps) {
     const [ plc, setPlc ] = useState<PLCOut | null>(null);
     const [ plcRefresh, setPlcRefresh ] = useState(0);
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState<string | null>(null);
     const [ isForm, setIsForm ] = useState(false);
-    const [ activeView, setActiveView ] = useState<ActiveView | null>(null);
+    const [ isRegisters, setIsRegisters ] = useState<MapRegisterOut[]>([]);
+    const [ activeView, setActiveView ] = useState<ActiveView | null>('registers');
 
 
     useEffect(() => { 
@@ -42,6 +46,18 @@ export function Plc({controllerId}: PlcProps) {
             }
         };
         fetchPlc();
+    }, [controllerId, plcRefresh]);
+
+    useEffect(() => {
+        const loadRegisters = async () => {
+            try {
+                const response = await registerService.list(controllerId);
+                setIsRegisters(response);
+            } catch {
+                setError("Erro ao carregar registradores!");
+            }
+        }
+        loadRegisters();
     }, [controllerId, plcRefresh]);
 
     const handleUpdatePlc = () => {
@@ -61,6 +77,7 @@ export function Plc({controllerId}: PlcProps) {
 
     const handleFormClose = () => {
         setIsForm(false);
+        setActiveView('registers')
     };
 
     if (loading) return <span>Carregando PLC...</span>
@@ -97,6 +114,18 @@ export function Plc({controllerId}: PlcProps) {
                     </PlcHeader>
                     
                     <DashSection>
+                        {activeView === 'registers' &&
+                            <RegisterContainer>
+                                {children}
+                                {isRegisters.map((register) => (
+                                    <Register 
+                                        key={register.id}
+                                        plcId={plc.id} 
+                                        registerId={register.id}
+                                    />
+                                ))}
+                            </RegisterContainer>
+                        }
                         {isForm && (
                             <FormModal>
                                 <CancelButton onClick={handleFormClose}>

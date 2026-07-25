@@ -104,4 +104,18 @@ export const ConfigContent = styled.div`
     }
 `
 
-export const DashSection = styled.section``
+export const DashSection = styled.section`
+    width: calc(100% - 5rem);
+    min-height: 95vh;
+`
+
+export const RegisterContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    width: 100%;
+    min-height: 100%;
+    padding: 1.5rem;
+    margin-left: 0.5rem;
+    color: #fff;
+`

@@ -36,7 +36,6 @@ export function AllDevices({children}: DeviceProps) {
 
     return (
         <Container>
-            <h2>All Devices</h2>
             <SectionDevices>
                 {children}
                 {devices.map((device) => (

@@ -10,12 +10,6 @@ export const Container = styled.main`
     justify-content: center;
     align-items: center;
 
-    h2 {
-        width: 90%;
-        height: 45px;
-        text-align: center;
-        margin-top: 25px;
-    }
 `
 
 export const SectionDevices = styled.section`
@@ -23,6 +17,6 @@ export const SectionDevices = styled.section`
     grid-template-columns: repeat(3, 1fr);
     width: 100%;
     height: 100%;
-    gap: 25px 30px;
-    padding: 0;
+    gap: 20px 30px;
+    padding: 1rem 0;
 `

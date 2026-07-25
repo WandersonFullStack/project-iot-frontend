@@ -79,21 +79,18 @@ export function DeviceFull({deviceId}: PropsDevice) {
     }, [deviceId]);
 
     useDeviceWebSocket(deviceId, (newMsg) => {
-        setIsMessages(prev => [newMsg, ...prev]);
+        setIsMessages((current) => [newMsg, ...current]);
     });
 
-    useEffect(() => {
-        async function fetchApiKey() {
-            try {
-                const response = await deviceService.renewKey(deviceId);
-                setNewAPIKey(response.api_key);
-                setCopied(false);
-            } catch (error) {
-                return error
-            }
-        };
-        fetchApiKey();
-    }, [deviceId]);
+    const renewalKey = async () => {
+        try {
+            const response = await deviceService.renewKey(deviceId);
+            setNewAPIKey(response.api_key);
+            setCopied(false);
+        } catch (error) {
+            return error
+        }
+    };
 
     const handleOpenForm = () => {
         setActiveView('update-form')
@@ -104,7 +101,8 @@ export function DeviceFull({deviceId}: PropsDevice) {
     };
 
     const handleNewApiKey= () => {
-        setActiveView('NewAPIKey')
+        setActiveView('NewAPIKey');
+        renewalKey();
     };
 
     const handleCopyNewApiKey = async () => {
@@ -235,7 +233,7 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                     <TableHead>
                                         <TableContent>
                                             <TableItem scope="col">Topic</TableItem>
-                                            <TableItem scope="col">Payload</TableItem>
+                                            <TableItem scope="col">Value</TableItem>
                                             <TableItem scope="col">QoS</TableItem>
                                             <TableItem scope="col">Retain</TableItem>
                                             <TableItem scope="col">Properties</TableItem>
@@ -244,7 +242,7 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                     </TableHead>
                                     <TableBody>
                                         {isMessages.map((message) => (
-                                            <TableContent key={message.id}>
+                                            <TableContent key={message.id} >
                                                 <TableValue>{message.topic}</TableValue>
                                                 <TableValue>{message.payload ?? '-'}</TableValue>
                                                 <TableValue>{message.qos}</TableValue>
@@ -288,6 +286,7 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                     It must be used to authenticate the signature of an IoT device.
                                 </p>
 
+                                <p>device_id: {device.device_id}</p>
                                 <textarea readOnly value={newAPIKey} rows={1} />
 
                                 <div className="popup-actions">

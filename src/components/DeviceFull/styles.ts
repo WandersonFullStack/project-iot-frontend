@@ -80,8 +80,6 @@ export const ContentCard = styled.div`
     flex-direction: column;
     align-items: flex-start;
     padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 5px 35px rgba(0,0,0, 0.5);
 
     ul {
         width: 100%;
@@ -186,6 +184,7 @@ export const MessagesTable = styled.div`
     max-width: 1600px;
     height: 45vh;
     padding: 0 1rem;
+    overflow: auto;
 `
 
 export const Table = styled.table`
@@ -206,8 +205,9 @@ export const TableHead = styled.thead`
 `
 
 export const TableContent = styled.tr`
+    
     &:nth-of-type(even) {
-        background-color: rgb(160 160 160);
+        background-color: rgb(57 61 77);
     }
 `
 
@@ -219,7 +219,6 @@ export const TableItem = styled.th`
 
 export const TableBody = styled.tbody`
     height: 100%;
-    overflow: auto;
 `
 
 export const TableValue = styled.td`

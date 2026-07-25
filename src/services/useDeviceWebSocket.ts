@@ -17,6 +17,11 @@ export function useDeviceWebSocket(
     onMessage: (msg: MessageOut) => void
 ) {
     const wsRef = useRef<WebSocket | null>(null);
+    const onMessageRef = useRef(onMessage);
+
+    useEffect(() => {
+        onMessageRef.current = onMessage;
+    }, [onMessage]);
 
     useEffect(() => {
         const token = localStorage.getItem('token');
@@ -34,22 +39,22 @@ export function useDeviceWebSocket(
 
             if (data.device_id !== deviceId) return;
 
-            const newMsg: MessageOut = {
-                id: Date.now(),
-                topic: data.topic,
-                payload: data.payload,
-                qos: data.qos,
-                retain: data.retain,
-                content_type: null,
-                user_props: null,
-                received_in: new Date(),
-            };
-
-            onMessage(newMsg);
+            onMessageRef.current(
+                {
+                    id: Date.now(),
+                    topic: data.topic,
+                    payload: data.payload,
+                    qos: data.qos,
+                    retain: data.retain,
+                    content_type: null,
+                    user_props: null,
+                    received_in: new Date(),
+                }
+            );
         };
 
         ws.onerror = (err) => {
-            return err;
+            console.log("WebSocket error:", err);
         };
 
         return () => {

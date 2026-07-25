@@ -198,3 +198,10 @@ export interface TestConnOut {
   port: number;
   unit_id: number;
 }
+
+export interface ModbusPayload {
+  value: number;
+  gross_value: number;
+  unit: string;
+  registrar: number;
+}
