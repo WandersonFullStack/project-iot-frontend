@@ -1,13 +1,18 @@
 import { useState, useEffect } from "react";
-import { SquareX } from "lucide-react";
+import { SquareX, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
-// import { Doughnut } from "react-chartjs-2";
+import { Doughnut, Bar, Line } from "react-chartjs-2";
 import Speedometer from "react-d3-speedometer";
 import {
     Chart as ChartJS,
     ArcElement,
     Tooltip,
     Legend,
+    CategoryScale,
+    LineElement,
+    LinearScale,
+    PointElement,
+    BarElement,
 } from "chart.js";
 
 import { deviceService } from "../../services/deviceService";
@@ -17,11 +22,9 @@ import { UpdateDevice, FormModal, CancelButton } from "../index";
 
 import {
     Container,
-    ContentSection,
-    Card,
-    MetricsCard,
+    HeaderDevice,
+    HinnerHeader,
     ContentMetric,
-    ContentCard,
     Button,
     MessagesTable,
     Table,
@@ -31,7 +34,8 @@ import {
     TableBody,
     TableValue,
     PopupOverlay,
-    PopupCard
+    PopupCard,
+    Status
 } from "./styles";
 
 type PropsDevice = {
@@ -40,7 +44,121 @@ type PropsDevice = {
 
 type ActiveView = 'device-view' | 'update-form' | 'NewAPIKey';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+type ChartType = "gauge" | "line" | "bar" | "doughnut";
+
+type TopicChartConfig = {
+    id: string;
+    topic: string;
+    type: ChartType;
+    title?: string;
+    color?: string;
+    maxValue?: number;
+    historySize?: number;
+};
+
+type DeviceChartConfig = Record<string, TopicChartConfig[]>;
+
+type ChartFormState = {
+    topic: string;
+    type: ChartType;
+    title: string;
+    color: string;
+    maxValue: number;
+    historySize: number;
+};
+
+type NumericMessage = MessageOut & {
+    value: number;
+};
+
+const STORAGE_PREFIX = "device-charts";
+const DEFAULT_MAX_VALUE = 350;
+const DEFAULT_HISTORY_SIZE = 20;
+const DEFAULT_COLOR = "#08692d";
+
+ChartJS.register(
+    ArcElement, 
+    Tooltip,
+    Legend,
+    CategoryScale,
+    LineElement,
+    LinearScale,
+    PointElement,
+    BarElement
+);
+
+function chartStorageKey(deviceId: string) {
+    return `${STORAGE_PREFIX}:${deviceId}`;
+}
+
+function createChartId() {
+    if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
+        return crypto.randomUUID();
+    }
+
+    return `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+}
+
+function readDeviceCharts(deviceId: string): DeviceChartConfig {
+    if (typeof window === "undefined") {
+        return {};
+    }
+
+    try {
+        const raw = window.localStorage.getItem(chartStorageKey(deviceId));
+        return raw ? (JSON.parse(raw) as DeviceChartConfig) : {};
+    } catch {
+        return {};
+    }
+}
+
+function numericPayload(payload: string | null): number {
+    if (payload === null) {
+        return Number.NaN;
+    }
+
+    try {
+        const parsed = JSON.parse(payload);
+
+        if (
+            typeof parsed === "object" &&
+            parsed !== null &&
+            "value" in parsed
+        ) {
+            return Number(parsed.value);
+        }
+    } catch (error){
+        console.error(error);
+    }
+
+    return Number(payload);
+}
+
+function buildNumericSeries(mensagens: MessageOut[]): NumericMessage[] {
+    return mensagens
+        .map((message) => ({
+            ...message,
+            value: numericPayload(message.payload),
+        }))
+        .filter((message) => !Number.isNaN(message.value))
+        .sort(
+            (left, right) => 
+                new Date(left.received_in).getTime() - new Date(right.received_in).getTime()
+        );
+}
+
+function chartTitle(config: TopicChartConfig) {
+    return config.title?.trim() || config.topic;
+}
+
+function clampValue(value: number, maxValue: number) {
+    return Math.min(Math.max(value, 0), maxValue);
+}
+
+function metricFromTopic(topic: string) {
+    const parts = topic.split("/").filter(Boolean);
+    return parts.at(-1) ?? topic;
+}
 
 export function DeviceFull({deviceId}: PropsDevice) {
     const [ loading, setLoading ] = useState(true);
@@ -51,6 +169,18 @@ export function DeviceFull({deviceId}: PropsDevice) {
     const [ newAPIKey, setNewAPIKey ] = useState<string | null>(null);
     const [ copied, setCopied ] = useState(false);
     const [ activeView, setActiveView ] = useState<ActiveView | null>('device-view');
+
+    const [ chartConfigs, setChartConfigs ] = useState<DeviceChartConfig>(() => readDeviceCharts(deviceId));
+    const [ loadedChartsDeviceId, setLoadedChartsDeviceId ] = useState<string | null>(null);
+    const [ chartModalOpen, setChartModalOpen ] = useState(false);
+    const [ chartForm, setChartForm ] = useState<ChartFormState>({
+        topic: "",
+        type: "gauge",
+        title: "",
+        color: DEFAULT_COLOR,
+        maxValue: DEFAULT_MAX_VALUE,
+        historySize: DEFAULT_HISTORY_SIZE,
+    });
 
     useEffect(() => {
         async function fetchDevice() {
@@ -78,6 +208,27 @@ export function DeviceFull({deviceId}: PropsDevice) {
         loadMessages();
     }, [deviceId]);
 
+    useEffect(() => {
+        const timeoutId = window.setTimeout(() => {
+            setChartConfigs(readDeviceCharts(deviceId));
+            setLoadedChartsDeviceId(deviceId);
+            setChartModalOpen(false);
+        }, 0);
+
+        return () => window.clearTimeout(timeoutId);
+    }, [deviceId]);
+
+    useEffect(() => {
+        if (loadedChartsDeviceId !== deviceId) {
+            return;
+        }
+
+        window.localStorage.setItem(
+            chartStorageKey(deviceId),
+            JSON.stringify(chartConfigs)
+        );
+    }, [chartConfigs, deviceId, loadedChartsDeviceId]);
+
     useDeviceWebSocket(deviceId, (newMsg) => {
         setIsMessages((current) => [newMsg, ...current]);
     });
@@ -93,14 +244,17 @@ export function DeviceFull({deviceId}: PropsDevice) {
     };
 
     const handleOpenForm = () => {
+        setChartModalOpen(false);
         setActiveView('update-form')
     };
 
     const handleFormClose = () => {
+        setChartModalOpen(false);
         setActiveView('device-view');
     };
 
     const handleNewApiKey= () => {
+        setChartModalOpen(false);
         setActiveView('NewAPIKey');
         renewalKey();
     };
@@ -123,34 +277,205 @@ export function DeviceFull({deviceId}: PropsDevice) {
         }
     };
 
-    const latestPayload = isMessages[0]?.payload ?? null;
-    const numericValue = latestPayload !== null ? parseFloat(latestPayload) : NaN;
-    const isNumeric = !isNaN(numericValue);
+    const openChartModal = (topic: string) => {
+        setChartForm({
+            topic,
+            type: "gauge",
+            title: "",
+            color: DEFAULT_COLOR,
+            maxValue: DEFAULT_MAX_VALUE,
+            historySize: DEFAULT_HISTORY_SIZE,
+        });
+        setChartModalOpen(true);
+    };
 
-    const GAUGE_MAX = 350;
-    const gaugeValue = isNumeric ? Math.min(Math.max(numericValue, 0), GAUGE_MAX) : 0;
+    const closeChartModal = () => {
+        setChartModalOpen(false);
+    };
 
-    // const gaugeData = {
-    //     labels: ['Value', ''],
-    //     datasets: [{
-    //         data: [gaugeValue, GAUGE_MAX - gaugeValue],
-    //         backgroundColor: ['#08692d', '#1c1c2e'],
-    //         borderWidth: 0,
-    //         circumference: 180,
-    //         rotation: 270,
-    //     }],
-    // };
+    const saveChartConfig = () => {
+        if (!chartForm.topic.trim()) {
+            toast.error("Select a topic frist.");
+            return;
+        }
 
-    // const gaugeOptions = {
-    //     plugins: {
-    //         legend: { display: false},
-    //         Tooltip: { enabled: false},
-    //     },
-    //     cutout: '75%',
-    // };
+        const topic = chartForm.topic.trim();
+        const nextChart: TopicChartConfig = {
+            id: createChartId(),
+            topic,
+            type: chartForm.type,
+            title: chartForm.title.trim() || undefined,
+            color: chartForm.color || DEFAULT_COLOR,
+            maxValue:
+                chartForm.type === "gauge" || chartForm.type === "doughnut" 
+                    ? chartForm.maxValue 
+                    : undefined,
+            historySize:
+                chartForm.type === "line" || chartForm.type === "bar" 
+                    ? chartForm.historySize 
+                    : undefined,
+        };
+
+        setChartConfigs((current) => {
+            const next = { ...current };
+            const list = next[topic] ? [...next[topic]] : [];
+            next[topic] = [...list, nextChart];
+            return next;
+        });
+
+        setChartModalOpen(false);
+        toast.success("Chart added to topic.");
+    };
+
+    const removeChartConfig = (topic: string, chartId: string) => {
+        setChartConfigs((current) => {
+            const next = { ...current };
+            const nextList = (next[topic] || []).filter((chart) => chart.id !== chartId);
+
+            if (nextList.length === 0) {
+                delete next[topic];
+            } else {
+                next[topic] = nextList;
+            }
+
+            return next;
+        });
+    };
+
+    const renderChart = (config: TopicChartConfig, topicMessages: MessageOut[]) => {
+        const numericSeries = buildNumericSeries(topicMessages);
+        const title = chartTitle(config);
+
+        if (config.type === "gauge") {
+            const latestValue = numericSeries.at(-1)?.value ?? 0;
+            const maxValue = config.maxValue ?? DEFAULT_MAX_VALUE;
+            const gaugeValue = clampValue(latestValue, maxValue);
+
+            return (
+                <ContentMetric>
+                    <Speedometer
+                        maxValue={maxValue}
+                        value={gaugeValue}
+                        needleColor="#a6adc8"
+                        startColor={config.color ?? DEFAULT_COLOR}
+                        endColor="#EB0D09"
+                        segments={5}
+                        currentValueText={numericSeries.length ? `${latestValue}` : "-"}
+                        textColor="#a6adc8"
+                        width={280}
+                        height={250}
+                        paddingVertical={5}
+                    />
+                </ContentMetric>
+            );
+        }
+
+        if (numericSeries.length === 0) {
+            return <p style={{ color: "#a6adc8"}}>No numeric data yet for this topic.</p>;
+        }
+
+        const historySize = config.historySize ?? DEFAULT_HISTORY_SIZE;
+        const visibleSeries = numericSeries.slice(-historySize);
+        const labels = visibleSeries.map((message) => 
+            new Date(message.received_in).toLocaleTimeString()
+        );
+        const values = visibleSeries.map((message) => message.value);
+
+        if (config.type === "line") {
+            return (
+                <ContentMetric>
+                    <Line
+                        data={{
+                            labels,
+                            datasets: [
+                                {
+                                    label: title,
+                                    data: values,
+                                    borderColor: config.color ?? DEFAULT_COLOR,
+                                    backgroundColor: `${config.color ?? DEFAULT_COLOR}33`,
+                                    tension: 0.35,
+                                    pointRadius: 3,
+                                },
+                            ],
+                        }}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                            },
+                            scales: {
+                                y: { beginAtZero: true },
+                            },
+                        }}
+                    />
+                </ContentMetric>
+            );
+        }
+
+        if (config.type === "bar") {
+            return (
+                <ContentMetric>
+                    <Bar
+                        data={{
+                            labels,
+                            datasets: [
+                                {
+                                    label: title,
+                                    data: values,
+                                    backgroundColor: config.color ?? DEFAULT_COLOR,
+                                },
+                            ],
+                        }}
+                        options={{
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false },
+                            },
+                            scales: {
+                                y: { beginAtZero: true },
+                            },
+                        }}
+                    />
+                </ContentMetric>
+            );
+        }
+
+        const maxValue = config.maxValue ?? DEFAULT_MAX_VALUE;
+        const latestValue = clampValue(numericSeries.at(-1)?.value ?? 0, maxValue);
+
+        return (
+            <ContentMetric>
+                <Doughnut
+                    data={{
+                        labels: [title, "Remaining"],
+                        datasets: [
+                            {
+                                data: [latestValue, Math.max(maxValue - latestValue, 0)],
+                                backgroundColor: [config.color ?? DEFAULT_COLOR, "#1c1c2e"],
+                                borderWidth: 0,
+                            },
+                        ],
+                    }}
+                    options={{
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                        },
+                    }}
+                />
+            </ContentMetric>
+        );
+    };
 
     if (loading) return <span>Loading device...</span>
     if (error) return <span>{error}</span>
+
+    const isStatus = device?.status === 'offline';
+
+    const activeCharts = loadedChartsDeviceId === deviceId ? chartConfigs : {};
     
     return (
         <>
@@ -158,75 +483,156 @@ export function DeviceFull({deviceId}: PropsDevice) {
                 <Container>
                     {activeView === 'device-view' &&
                         <>
-                            <ContentSection key={device.device_id}>
-                                <Card>
-                                    <MetricsCard>
-                                        <h3>{device.name}</h3>
+                            <HeaderDevice key={device.device_id}>
+                                <HinnerHeader>
+                                    <h3>
+                                        {device.name} 
+                                        <Status $isStatus={isStatus}>
+                                            {device.status}
+                                        </Status>
+                                    </h3>
 
-                                        {/* <div style={{ position: 'relative' }}>
-                                            <Doughnut data={gaugeData} options={gaugeOptions} />
-                                            <div style={{
-                                                position: 'absolute',
-                                                bottom: '0',
-                                                width: '100%',
-                                                textAlign: 'center',
-                                                color: '#a6adc8',
-                                            }}>
-                                                <strong style={{ fontSize: '1.4rem' }}>
-                                                    {isNumeric ? numericValue : latestPayload ?? '-'}
-                                                </strong>
-                                                <div style={{ fontSize: '0.7rem', color: '#6c7086' }}>
-                                                    {isMessages[0]?.topic ?? 'latest'}
-                                                </div>
-                                            </div>
-                                        </div> */}
-                                        <ContentMetric>
-                                            <Speedometer
-                                                maxValue={GAUGE_MAX}
-                                                value={gaugeValue}
-                                                needleColor="#a6adc8"
-                                                startColor="#08692d"
-                                                endColor="#EB0D09"
-                                                segments={5}
-                                                currentValueText={`${numericValue}`}
-                                                textColor="#a6adc8"
-                                                width={360}
-                                                height={270}
-                                            />
-                                        </ContentMetric>
-                                    </MetricsCard>
                                     <div className="actions">
-                                        <Button onClick={handleOpenForm}>
-                                            Unpdate
-                                        </Button>
-                                        <Button onClick={handleNewApiKey}>
-                                            Renewal Key
-                                        </Button>
+                                        <Button onClick={handleOpenForm}>Unpdate</Button>
+                                        <Button onClick={handleNewApiKey}>Renewal Key</Button>
                                     </div>
-                                </Card>
+                                </HinnerHeader>
+                            </HeaderDevice>
 
-                                <Card>
-                                    <div className="content" >
-                                        <ContentCard>
-                                            <h3>Topics</h3>
-                                            <ul>
-                                                {device.topics.map((topic, index) => (
-                                                    <li key={`${topic}-${index}`} >
-                                                        {topic}
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </ContentCard>
-                                    </div>
+                            <div
+                                style={{
+                                    width: "calc(100% - 5rem)",
+                                    maxWidth: "1600px",
+                                    padding: "0 1rem 1.5rem",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        background: "none",
+                                        color: "#a6adc8",
+                                    }}
+                                >
+                                    <div
+                                        style={{
+                                            display: "grid",
+                                            gridTemplateColumns: "repeat(4, 1fr)",
+                                            gap: "1rem",
+                                            maxHeight: "100vh",
+                                            paddingRight: "0.25rem",
+                                        }}
+                                    >
+                                        {device.topics.map((topic) => {
+                                            const topicMessages = isMessages.filter(
+                                                (message) => metricFromTopic(message.topic) === topic
+                                            );
+                                            const topicCharts = activeCharts[topic] ?? [];
 
-                                    <div className="content" >
-                                        <ContentCard>
-                                            <h3>Description</h3>
-                                            <p>{device.description}</p>
-                                        </ContentCard>
+                                            return (
+                                                <div
+                                                    key={topic}
+                                                    style={{
+                                                        border: "1px solid #2b3140",
+                                                        borderRadius: "12px",
+                                                        padding: "0.5rem",
+                                                        background: "#0a1020",
+                                                    }}
+                                                >
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            justifyContent: "space-between",
+                                                            alignItems: "center",
+                                                            gap: "1rem",
+                                                            padding: "0 0.5rem",
+                                                            marginBottom: "0.75rem",
+                                                        }}
+                                                    >
+                                                        <div>
+                                                            <strong>{topic}</strong>
+                                                            <div style={{ fontSize: "0.8rem", color: "#6c7086" }}>
+                                                                {topicMessages.length} messages
+                                                            </div>
+                                                        </div>
+
+                                                        <Button onClick={() => openChartModal(topic)}>
+                                                            Add chart
+                                                        </Button>
+                                                    </div>
+
+                                                    <div
+                                                        style={{
+                                                            display: "flex",
+                                                            flexDirection: "column",
+                                                            gap: "1rem",
+                                                        }}
+                                                    >
+                                                        {topicCharts.length === 0 ? (
+                                                            <p style={{ margin: 0, color: "#6c7086" }}>
+                                                                No charts configured for this topic yet.
+                                                            </p>
+                                                        ) : (
+                                                            topicCharts.map((chart) => (
+                                                                <div
+                                                                    key={chart.id}
+                                                                    style={{
+                                                                        border: "1px solid #1f2738",
+                                                                        borderRadius: "12px",
+                                                                        padding: "1rem",
+                                                                        background: "#020814",
+                                                                        maxWidth: "100%",
+                                                                    }}
+                                                                >
+                                                                    <div
+                                                                        style={{
+                                                                            display: "flex",
+                                                                            justifyContent: "space-between",
+                                                                            alignItems: "center",
+                                                                            gap: "1rem",
+                                                                            marginBottom: "0.75rem",
+                                                                        }}
+                                                                    >
+                                                                        <div>
+                                                                            <strong>{chartTitle(chart)}</strong>
+                                                                            <div
+                                                                                style={{
+                                                                                    fontSize: "0.8rem",
+                                                                                    color: "#6c7086",
+                                                                                }}
+                                                                            >
+                                                                                {chart.type.toUpperCase()}
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <button
+                                                                            onClick={() =>
+                                                                                removeChartConfig(topic, chart.id)
+                                                                            }
+                                                                            style={{
+                                                                                display: "inline-flex",
+                                                                                alignItems: "center",
+                                                                                gap: "0.35rem",
+                                                                                border: "none",
+                                                                                background: "transparent",
+                                                                                color: "#c9d1e7",
+                                                                                cursor: "pointer",
+                                                                            }}
+                                                                        >
+                                                                            <Trash2 size={16} />
+                                                                            Remove
+                                                                        </button>
+                                                                    </div>
+
+                                                                    {renderChart(chart, topicMessages)}
+                                                                </div>
+                                                            ))
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
                                     </div>
-                                </Card>
-                            </ContentSection>
+                                </div>
+                            </div>
                             
                             <MessagesTable>
                                 <Table>
@@ -243,7 +649,7 @@ export function DeviceFull({deviceId}: PropsDevice) {
                                     <TableBody>
                                         {isMessages.map((message) => (
                                             <TableContent key={message.id} >
-                                                <TableValue>{message.topic}</TableValue>
+                                                <TableValue>{metricFromTopic(message.topic)}</TableValue>
                                                 <TableValue>{message.payload ?? '-'}</TableValue>
                                                 <TableValue>{message.qos}</TableValue>
                                                 <TableValue>{message.retain ? 'Yes' : 'No'}</TableValue>
@@ -300,6 +706,205 @@ export function DeviceFull({deviceId}: PropsDevice) {
                             </PopupCard>
                         </PopupOverlay>)
                     }
+
+                    {chartModalOpen && device && (
+                        <FormModal>
+                            <div
+                                style={{
+                                    width: "min(760px, 92vw)",
+                                    background: "#020814",
+                                    color: "#eee",
+                                    borderRadius: "16px",
+                                    padding: "24px",
+                                    boxShadow: "0 20px 60px rgba(0,0,0,0.35)",
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "space-between",
+                                        alignItems: "center",
+                                        marginBottom: "1rem",
+                                    }}
+                                >
+                                    <h3 style={{ margin: 0 }}>Add chart to topic</h3>
+                                    <CancelButton onClick={closeChartModal}>
+                                        <SquareX />
+                                    </CancelButton>
+                                </div>
+
+                                <div
+                                    style={{
+                                        display: "grid",
+                                        gridTemplateColumns: "1fr 1fr",
+                                        gap: "1rem",
+                                    }}
+                                >
+                                    <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                        <span>Topic</span>
+                                        <select
+                                            value={chartForm.topic}
+                                            onChange={(e) =>
+                                                setChartForm((current) => ({
+                                                    ...current,
+                                                    topic: e.target.value,
+                                                }))
+                                            }
+                                            style={{
+                                                padding: "0.75rem",
+                                                borderRadius: "10px",
+                                            }}
+                                        >
+                                            <option value="">Select a topic</option>
+                                            {device.topics.map((topic) => (
+                                                <option key={topic} value={topic}>
+                                                    {topic}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </label>
+
+                                    <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                        <span>Chart type</span>
+                                        <select
+                                            value={chartForm.type}
+                                            onChange={(e) =>
+                                                setChartForm((current) => ({
+                                                    ...current,
+                                                    type: e.target.value as ChartType,
+                                                }))
+                                            }
+                                            style={{
+                                                padding: "0.75rem",
+                                                borderRadius: "10px",
+                                            }}
+                                        >
+                                            <option value="gauge">Gauge</option>
+                                            <option value="line">Line</option>
+                                            <option value="bar">Bar</option>
+                                            <option value="doughnut">Doughnut</option>
+                                        </select>
+                                    </label>
+
+                                    <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                        <span>Title</span>
+                                        <input
+                                            value={chartForm.title}
+                                            onChange={(e) =>
+                                                setChartForm((current) => ({
+                                                    ...current,
+                                                    title: e.target.value,
+                                                }))
+                                            }
+                                            placeholder="Optional title"
+                                            style={{
+                                                padding: "0.75rem",
+                                                borderRadius: "10px",
+                                            }}
+                                        />
+                                    </label>
+
+                                    <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                        <span>Color</span>
+                                        <input
+                                            type="color"
+                                            value={chartForm.color}
+                                            onChange={(e) =>
+                                                setChartForm((current) => ({
+                                                    ...current,
+                                                    color: e.target.value,
+                                                }))
+                                            }
+                                            style={{
+                                                height: "44px",
+                                                borderRadius: "10px",
+                                                border: "none",
+                                                padding: "0.25rem",
+                                            }}
+                                        />
+                                    </label>
+
+                                    {(chartForm.type === "gauge" || chartForm.type === "doughnut") && (
+                                        <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                            <span>Max value</span>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                value={chartForm.maxValue}
+                                                onChange={(e) =>
+                                                    setChartForm((current) => ({
+                                                        ...current,
+                                                        maxValue: Number(e.target.value),
+                                                    }))
+                                                }
+                                                style={{
+                                                    padding: "0.75rem",
+                                                    borderRadius: "10px",
+                                                }}
+                                            />
+                                        </label>
+                                    )}
+
+                                    {(chartForm.type === "line" || chartForm.type === "bar") && (
+                                        <label style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
+                                            <span>History size</span>
+                                            <input
+                                                type="number"
+                                                min={1}
+                                                value={chartForm.historySize}
+                                                onChange={(e) =>
+                                                    setChartForm((current) => ({
+                                                        ...current,
+                                                        historySize: Number(e.target.value),
+                                                    }))
+                                                }
+                                                style={{
+                                                    padding: "0.75rem",
+                                                    borderRadius: "10px",
+                                                }}
+                                            />
+                                        </label>
+                                    )}
+                                </div>
+
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                        gap: "0.75rem",
+                                        marginTop: "1.5rem",
+                                    }}
+                                >
+                                    <button
+                                        onClick={closeChartModal}
+                                        style={{
+                                            background: "transparent",
+                                            border: "1px solid #6c7086",
+                                            color: "#c9d1e7",
+                                            padding: "0.75rem 1rem",
+                                            borderRadius: "10px",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        Cancel
+                                    </button>
+                                    <button
+                                        onClick={saveChartConfig}
+                                        style={{
+                                            background: "#08692d",
+                                            border: "none",
+                                            color: "#fff",
+                                            padding: "0.75rem 1rem",
+                                            borderRadius: "10px",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        Save chart
+                                    </button>
+                                </div>
+                            </div>
+                        </FormModal>
+                    )}
                 </Container>
 
             )};

@@ -35,22 +35,26 @@ export function useDeviceWebSocket(
         };
 
         ws.onmessage = (event) => {
-            const data: WsMessage = JSON.parse(event.data);
+            try {
+                const data: WsMessage = JSON.parse(event.data);
 
-            if (data.device_id !== deviceId) return;
+                if (data.device_id !== deviceId) return;
 
-            onMessageRef.current(
-                {
-                    id: Date.now(),
-                    topic: data.topic,
-                    payload: data.payload,
-                    qos: data.qos,
-                    retain: data.retain,
-                    content_type: null,
-                    user_props: null,
-                    received_in: new Date(),
-                }
-            );
+                onMessageRef.current(
+                    {
+                        id: Date.now(),
+                        topic: data.topic,
+                        payload: data.payload,
+                        qos: data.qos,
+                        retain: data.retain,
+                        content_type: null,
+                        user_props: null,
+                        received_in: new Date(),
+                    }
+                );
+            } catch (error) {
+                console.error("Invalid WebSocket message", error);
+            }
         };
 
         ws.onerror = (err) => {

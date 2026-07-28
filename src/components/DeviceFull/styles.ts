@@ -1,5 +1,9 @@
 import styled from "styled-components";
 
+type StatusProps = {
+    $isStatus?: boolean;
+};
+
 export const Container = styled.div`
     width: 100%;
     display: flex;
@@ -8,37 +12,25 @@ export const Container = styled.div`
 
 `
 
-export const ContentSection = styled.div`
+export const HeaderDevice = styled.div`
     width: calc(100% - 5rem);
-    height: 50vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 2rem;
+    height: 2.5rem;
     padding: 1rem 2.5rem;
 `
 
-export const Card = styled.div`
+export const HinnerHeader = styled.div`
     width: 100%;
     display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: space-between;
     align-items: center;
     gap: 0.3rem;
     border-radius: 0.5rem;
 
-    .content {
-        width: 90%;
-        height: 50%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 1.5rem;
-        gap: 1rem;
-    }
-
     h3 {
-        margin-bottom: 0.5rem;
-        color: #6c7086;
+        width: 5rem;
+        text-align: center;
+        color: #a6adc8;
+        font-size: 24px;
     }
 
     .actions {
@@ -46,75 +38,44 @@ export const Card = styled.div`
         flex-direction: row;
         justify-content: space-evenly;
         align-items: center;
-        width: 100%;    
+        width: 19.5rem;    
     }
 `
 
-export const MetricsCard = styled.div`
-    width: 100%;
-    height: 70%;
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    span {
-        color: #6c7086;
-        font-size: 0.85rem;
-    }
+export const Status = styled.span<StatusProps>`
+    color: ${({$isStatus}) => ($isStatus ? 'red' : 'green')};
+    font-size: 16px;
+    text-align: center;
+    width: 7.5rem;
+    margin-left: 1rem;
 `
 
 export const ContentMetric = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    height: 100%;
-    margin-top: 1.5rem;
-`
-
-export const ContentCard = styled.div`
-    width: 80%;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 1rem;
-
-    ul {
-        width: 100%;
-        margin: 0;
-        padding-left: 1.2rem;
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-        color: #a6adc8;
-
-        li {
-            line-height: 1.4;
-        }
-    }
-
-    p {
-        color: #a6adc8;
-    }
+    min-width: 17.5rem;
+    height: 13.5rem;
+    margin-top: 1rem;
 `
 
 export const Button = styled.button`
     color: #6c7086;
-    width: 180px;
     height: 35px;
-    border: solid #08692d 1px;
-    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
     font-weight: 600;
+    border: none;
     background: none;
-    transition: color .3s, background 0.3s;
+    transition: color .3s;
 
     &:hover {
         color: #a6adc8;
-        background: #08692d;
+        text-decoration-line: underline;
+        text-decoration-style: dashed;
+        text-decoration-color: #08692d;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 5px;
     }
 `
 
@@ -182,8 +143,9 @@ export const PopupCard = styled.div`
 export const MessagesTable = styled.div`
     width: calc(100% - 5rem);
     max-width: 1600px;
-    height: 45vh;
-    padding: 0 1rem;
+    max-height: 50vh;
+    margin-bottom: 1rem;
+    border: solid #6c7086 1px;
     overflow: auto;
 `
 
