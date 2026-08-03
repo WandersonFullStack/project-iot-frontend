@@ -1,9 +1,7 @@
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
-import HeroImg from "../../assets/hero-img.jpeg";
-import FeaturesImg from "../../assets/features-img.jpg";
-import CtaImg from "../../assets/cta-img.jpg";
+import HeroImg from "../../assets/hero-img.jpg";
 
 export const PageWrapper = styled.div`
     min-height: 100vh;
@@ -235,11 +233,6 @@ export const HeroFormWrapper = styled.div`
 export const FeaturesSection = styled.section`
     min-height: 50vh;
     padding: 0 1.5rem;
-
-    background-image: linear-gradient(rgba(30,30,46, 0.3), rgba(30,30,46, 0.3)), url(${FeaturesImg});
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 `
 
 export const FeaturesInner = styled.div`
@@ -313,11 +306,6 @@ export const FeatureCard = styled.div`
 export const CTASection = styled.section`
     padding: 4rem 1.5rem;
     text-align: center;
-
-    background-image: linear-gradient(rgba(30,30,46, 0.5), rgba(30,30,46, 0.5)), url(${CtaImg});
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
 `
 
 export const CTAInner = styled.div`

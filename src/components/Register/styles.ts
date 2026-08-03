@@ -17,6 +17,7 @@ export const Card = styled.div`
     border: solid #313348 1px;
     border-radius: 1rem;
     box-shadow: 0 5px 15px rgba(0,0,0, 0.7);
+    color: #ddd;
 
     &:hover {
         border: solid #86c62d 1px;

@@ -64,6 +64,7 @@ export function Register({plcId, registerId}: Props) {
         <Container>
             {isItem && 
                 <Card key={isItem.id} >
+                    <h3>{isItem.topic}</h3>
                     <span>{regValue?.value} {regValue?.unit}</span>
                 </Card>
             }

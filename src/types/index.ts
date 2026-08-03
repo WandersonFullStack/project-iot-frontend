@@ -136,23 +136,23 @@ export interface PLCOut {
 }
 
 export interface PLCUpdate {
-  name: string | null;
-  ip: string | null;
-  port_modbus: number | null;
-  port_tcp: number | null;
-  protocol: string | null;
-  description: string | null;
-  unit_id: number | null;
-  timeout: number | null;
-  active: boolean | null;
+  name: string | "";
+  ip: string | "";
+  port_modbus: number | "";
+  port_tcp: number | "";
+  protocol: string | "";
+  description: string | "";
+  unit_id: number | "";
+  timeout: number | "";
+  active: boolean;
 }
 
 export interface MapRegisterIn {
   type: string;
   address: number;
   topic: string;
-  decription: string | null;
-  measure_unit: string | null;
+  description: string | null;
+  unit: string | null;
   scale: number;
   offset: number;
   qos: number;
@@ -166,8 +166,8 @@ export interface MapRegisterOut {
   address: number;
   address_modbus: number;
   topic: string;
-  decription: string | null;
-  measure_unit: string | null;
+  description: string | null;
+  unit: string | null;
   scale: number;
   offset: number;
   qos: number;
@@ -177,14 +177,14 @@ export interface MapRegisterOut {
 }
 
 export interface MapRegisterUpdate {
-  topic: string | null;
-  decription: string | null;
-  measure_unit: string | null;
-  scale: number | null;
-  offset: number | null;
-  qos: number | null;
-  read_only: boolean | null;
-  active: boolean | null;
+  topic?: string;
+  description?: string | null;
+  unit?: string | null;
+  scale?: number;
+  offset?: number;
+  qos?: number;
+  read_only?: boolean;
+  active?: boolean;
 }
 
 export interface MapBulkIn {

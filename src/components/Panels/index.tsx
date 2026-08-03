@@ -160,7 +160,7 @@ function metricFromTopic(topic: string) {
     return parts.at(-1) ?? topic;
 }
 
-export function DeviceFull({deviceId}: PropsDevice) {
+export function Panels({deviceId}: PropsDevice) {
     const [ loading, setLoading ] = useState(true);
     const [ error, setError ] = useState<string | null>(null);
     const [ device, setDevice ] = useState<DeviceOut | null>(null);

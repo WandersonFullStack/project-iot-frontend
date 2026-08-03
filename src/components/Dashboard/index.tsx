@@ -15,8 +15,7 @@ import { useAuth } from "../../contexts/index";
 import { 
     Header, 
     CreateDevice,
-    DeviceFull, 
-    AllDevices, 
+    Panels,
     Plc,
     CreatePlc,
     FormModal
@@ -30,14 +29,15 @@ import {
     List,
     MenuTitle,
     NavLink,
-    InsertMenu
+    InsertMenu,
+    HomeImage
 } from "./styles";
 
 type Props = {
     children?: React.ReactNode;
 };
 
-type ActiveView = "devices" | "plc" | "create-device" | "create-plc" | "device-full";
+type ActiveView = "home" | "plc" | "create-panel" | "create-plc" | "panel";
 
 export function Dashboard({children}: Props)  {
 
@@ -47,7 +47,7 @@ export function Dashboard({children}: Props)  {
     const [ loadListPlc, setLoadListPlc ] = useState(false);
     const [ listPlcRefresh, setListPlcRefresh ] = useState(0);
     const [ menuOpen, setMenuOpen ] = useState(true);
-    const [ activeView, setActiveView ] = useState<ActiveView>("devices");
+    const [ activeView, setActiveView ] = useState<ActiveView>("home");
     const [ plcId, setPlcId ] = useState<number | null>(null);
     const [ deviceById, setDeviceById ] = useState<string | null>(null);
     const [ deviceList, setDeviceList ] = useState<DeviceOut[]>([]);
@@ -70,7 +70,7 @@ export function Dashboard({children}: Props)  {
         async function fetchListDevice () {
             try {
                 const response = await deviceService.list();
-                setDeviceList(response);
+                setDeviceList(response as unknown as DeviceOut[]);
             } catch {
                 setDeviceList([]);
             }
@@ -92,7 +92,7 @@ export function Dashboard({children}: Props)  {
     };
 
     const handleAllDevices = () => {
-        setActiveView("devices");
+        setActiveView("home");
     };
 
     const handleListPlcs = () => {
@@ -108,13 +108,13 @@ export function Dashboard({children}: Props)  {
         setActiveView('create-plc');
     };
 
-    const handleNewDevice = () => {
-        setActiveView('create-device');
+    const handleNewPanel = () => {
+        setActiveView('create-panel');
     };
 
     const handleDevice = (id: string) => {
         setDeviceById(id);
-        setActiveView("device-full");
+        setActiveView("panel");
     };
 
     const handleListDvices = () => {
@@ -141,13 +141,13 @@ export function Dashboard({children}: Props)  {
                             </MenuTitle>
                             
                             <div className="nav-section">
-                                <NavLink className="menu-link" onClick={handleNewDevice} >
+                                <NavLink className="menu-link" onClick={handleNewPanel} >
                                     <Plus size={16} /> 
-                                    New Device 
+                                    New Panel 
                                 </NavLink>
                                 <NavLink className="menu-link" onClick={() => {handleAllDevices(); handleListDvices();}}>
                                     <GalleryVerticalEnd size={16} />
-                                    Devices
+                                    Panels
                                 </NavLink>
                                 <>
                                     {loadListDevice && (
@@ -155,7 +155,7 @@ export function Dashboard({children}: Props)  {
                                             {children}
                                             {deviceList.map((device) => (
                                                 <a 
-                                                    className="itrem-link"
+                                                    className="item-link"
                                                     key={device.device_id}
                                                     onClick={() => handleDevice(device.device_id)}
                                                 >
@@ -163,7 +163,7 @@ export function Dashboard({children}: Props)  {
                                                 </a>
                                             ))}
                                             <div className="actions-list">
-                                                <button className="close-button" onClick={handleNewDevice}>
+                                                <button className="close-button" onClick={handleNewPanel}>
                                                     <Plus size={18}/>
                                                 </button>
 
@@ -184,7 +184,7 @@ export function Dashboard({children}: Props)  {
                                             {children}
                                             {listPlcs.map((plc) => (
                                                 <a 
-                                                    className="itrem-link" 
+                                                    className="item-link" 
                                                     key={plc.id} 
                                                     onClick={() => handlePlc(plc.id)} 
                                                 >
@@ -216,9 +216,9 @@ export function Dashboard({children}: Props)  {
                 )}
 
                 <Content $menuOpen={menuOpen}>
-                    {activeView === "devices" && 
-                        <AllDevices />
-                    }
+                    {activeView === "home" && (
+                        <HomeImage/>
+                    )}
                     
                     {activeView === "plc" && plcId !== null &&
                         <Plc controllerId={plcId} />
@@ -227,20 +227,20 @@ export function Dashboard({children}: Props)  {
                     {activeView === "create-plc" && 
                         <FormModal>
                             <CreatePlc onSuccess={() => {
-                                setActiveView("devices");
+                                setActiveView("home");
                                 setListPlcRefresh(r => r + 1);
                             }}/>
                         </FormModal>
                     }
 
-                    {activeView === "create-device" &&
+                    {activeView === "create-panel" &&
                         <FormModal>
                             <CreateDevice /> 
                         </FormModal>
                     }
 
-                    {activeView === "device-full" &&
-                        <DeviceFull 
+                    {activeView === "panel" &&
+                        <Panels 
                             deviceId={deviceById!}
                         />
                     }

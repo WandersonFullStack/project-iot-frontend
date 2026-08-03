@@ -55,12 +55,12 @@ export function CreatePlc({onSuccess}: Props) {
         const numericFields = ["port_modbus", "port_tcp", "unit_id", "timeout"];
 
         setFormPlc((prev) => ({
-                ...prev,
-                [name]: numericFields.includes(name) ? Number(value) : value,
-            }));
-        };
+            ...prev,
+            [name]: numericFields.includes(name) ? Number(value) : value,
+        }));
+    };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
 

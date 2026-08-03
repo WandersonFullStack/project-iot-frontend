@@ -4,7 +4,7 @@ import { Search, SquareX } from "lucide-react";
 import { plcService } from "../../services/plcService";
 import { registerService } from "../../services/registerService";
 import { MapRegisterOut, PLCOut,  } from "../../types";
-import { UpdatePLC, CancelButton, FormModal, Register } from "../index";
+import { UpdatePLC, CancelButton, FormModal, Register, AddRegister, RegisterTable } from "../index";
 
 import {
     Container, 
@@ -72,7 +72,6 @@ export function Plc({controllerId, children}: PlcProps) {
 
     const handleUpdateRegister = () => {
         setActiveView('updateRegister');
-        setIsForm(true);
     };
 
     const handleFormClose = () => {
@@ -126,6 +125,18 @@ export function Plc({controllerId, children}: PlcProps) {
                                 ))}
                             </RegisterContainer>
                         }
+
+                        {activeView === 'updateRegister' &&
+                            <RegisterTable
+                                plcId={plc.id}
+                                registers={isRegisters}
+                                onRegisterUpdated={() => {
+                                    setPlcRefresh((current) => current + 1);
+                                    handleFormClose();
+                                }}
+                            />
+                        }
+
                         {isForm && (
                             <FormModal>
                                 <CancelButton onClick={handleFormClose}>
@@ -143,11 +154,13 @@ export function Plc({controllerId, children}: PlcProps) {
                                 }
 
                                 {activeView === 'createRegister' &&
-                                    <CreateRegister />
-                                }
-
-                                {activeView === 'updateRegister' &&
-                                    <UpdateRegister />
+                                    <AddRegister 
+                                        plcId={plc.id} 
+                                        onRegisterCreated={() => {
+                                            setPlcRefresh(r => r + 1);
+                                            handleFormClose();
+                                        }} 
+                                    />
                                 }
 
                             </FormModal>

@@ -52,19 +52,19 @@ export function UpdatePLC({plcId, onSuccess}: Props) {
             }));
         };
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
 
         try {
 
             await plcService.update(plcId, {
-                name: formPlc.name || null,
-                ip: formPlc.ip || null,
+                name: formPlc.name || "",
+                ip: formPlc.ip || "",
                 port_modbus: formPlc.port_modbus,
                 port_tcp: formPlc.port_tcp,
                 protocol: formPlc.protocol,
-                description: formPlc.description || null,
+                description: formPlc.description || "",
                 unit_id: formPlc.unit_id,
                 timeout: formPlc.timeout,
                 active: formPlc.active,

@@ -1,5 +1,6 @@
 import styled from "styled-components";
 
+import HomeImg from "../../assets/home-img.jpg";
 
 type ContentProps = {
     $menuOpen: boolean;
@@ -124,7 +125,7 @@ export const List = styled.div`
     padding-top: 0.2rem;
     border-bottom: solid #313844 1px;
 
-    .itrem-link {
+    .item-link {
         width: 95%;
         height: 1.3rem;
         display: flex;
@@ -165,4 +166,15 @@ export const List = styled.div`
             color: #a6adc8;
         }
     }
+`
+
+export const HomeImage = styled.div`
+    padding: 0 1.5rem;
+    width: calc(100% - 3.125rem);
+    height: 100vh;
+
+    background-image: linear-gradient(rgba(30,30,46, 0.2), rgba(30,30,46, 0.2)), url(${HomeImg});
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 `
